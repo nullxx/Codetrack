@@ -1,4 +1,5 @@
 const { authUtils } = require('../utils');
+authUtils // temporal (for lint)
 /**
  * Authorize level 1
  * @param {Request} req express request
@@ -8,7 +9,9 @@ const { authUtils } = require('../utils');
 const authorize = (req, res, next) => {
     // TODO 
     // TODO VALIDATION
+    req, res, next // temporal (for lint)
     const { user, hashedPassword } = req.body;
+    user, hashedPassword // temporal (for lint)
     // search database
     // authUtils.sign(foundId, process.env.JWT_SECRET);
 
