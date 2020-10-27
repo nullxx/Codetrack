@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node -e \"require('./src/scripts/exportDotenv.script', '.env')()\" && node ./bin/www",
-    "dev": "node -e \"require('./src/scripts/exportDotenv.script', '.env')()\" && nodemon ./bin/www",
+    "start": "node -e \"require('./src/scripts/exportDotenv.script')('.env')\" && node ./bin/www",
+    "dev": "node -e \"require('./src/scripts/exportDotenv.script')('.env')\" && nodemon ./bin/www",
     "lint": "eslint \"./**/*.js\" --quiet",
     "lintFull": "eslint \"./**/*.js\"",
     "lintFix": "eslint --fix './**/*.js'",
