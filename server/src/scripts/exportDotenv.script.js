@@ -7,9 +7,8 @@ const f = async (envPath) => {
     for (let i = 0; i < splitedLines.length; i++) {
         const line = splitedLines[i];
         const lineSplitted = line.split('=');
-        if (!lineSplitted) {
-            libLogger.log('error', '.env variable not correctly formatted');
-        }
+        if (!lineSplitted) return libLogger.log('error', '.env variable not correctly formatted');
+
         const varName = line.split('=')[0];
         const varValue = line.split('=')[1];
         process.env[varName] = varValue;
