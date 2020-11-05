@@ -10,8 +10,6 @@ const authorize = (req, res, next) => {
     // TODO 
     // TODO VALIDATION
     req, res, next // temporal (for lint)
-    const { user, hashedPassword } = req.body;
-    user, hashedPassword // temporal (for lint)
     // search database
     // authUtils.sign(foundId, process.env.JWT_SECRET);
 
