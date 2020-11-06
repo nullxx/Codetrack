@@ -1,5 +1,6 @@
 const { Sequelize } = require('sequelize');
 
+const loggerLib = require('../lib/logger');
 /**
  * Creates connection to DB
  */
@@ -15,7 +16,7 @@ module.exports.createConn = () => {
             dialectOptions: {
                 timezone: "Etc/GMT0"
             },
-            logging: process.env.DB_LOGGING
+            logging: process.env.DB_LOGGING_ENABLED === 'TRUE' ? loggerLib.log('debug') : false,
         }
     );
     return sequelize.authenticate;
