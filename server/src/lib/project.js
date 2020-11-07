@@ -96,7 +96,6 @@ const __createFile = async (lastFolder, { name, mimetype, truncated, size, md5, 
  * @returns {ProjectFiles} projectFile (new or existing)
  */
 const __checkProjectFilesLocalPath = async (localFilePath, project) => {
-    console.log(localFilePath)
     const ProjectFiles = DB.getConn().models.projectFiles;
     const projectFilesResult = await ProjectFiles.findAll({
         where: {
