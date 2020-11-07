@@ -9,7 +9,7 @@ const ProjectsPreModel = require('../models/projects.model');
 const SnapshotPreModel = require('../models/snapshots.model');
 const FilesPreModel = require('../models/files.model');
 const ProjectFilesPreModel = require('../models/projectFiles.model');
-
+const CollisionsPreModel = require('../models/collisions.model');
 // END IMPORT MODELS
 
 const models = [
@@ -19,6 +19,7 @@ const models = [
     SnapshotPreModel,
     FilesPreModel,
     ProjectFilesPreModel,
+    CollisionsPreModel,
 ];
 /**
  * Define all models

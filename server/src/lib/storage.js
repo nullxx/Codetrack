@@ -24,11 +24,12 @@ const save = (folderPath, { metadata, data }) => {
  * @param {object} neededData { metadata } where metadata need "fileName" prop
  * @returns {any} result file data
  */
-const read = (folderPath, { metadata }) => {
-    if (!folderPath || !metadata) throw new Error('ERR_NO_FOLDER_PATH');
-    const folder = kfs(folderPath);
-    const fileData = folder[metadata.fileName];
-
+const read = (filePath) => {
+    if (!filePath) throw new Error('ERR_NO_FOLDER_PATH');
+    const splitedPath = filePath.split('/');
+    const folder = kfs(splitedPath[0]);
+    const fileData = folder[splitedPath[1]]
+    
     return fileData;
 }
 

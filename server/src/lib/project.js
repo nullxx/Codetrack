@@ -1,6 +1,7 @@
 const zlib = require('zlib');
 const loggerLib = require('./logger');
-
+const collisionLib = require('./collision');
+const hashLib = require('./hash');
 const storageLib = require('./storage');
 const DB = require('./database');
 
@@ -69,10 +70,10 @@ const createMultipleSnapshots = async ({ user, project, fileDatas, localPath }) 
 const __createFile = async (lastFolder, { name, mimetype, truncated, size, md5, data }) => {
     const Files = DB.getConn().models.files;
 
-    const compressed = zlib.deflateSync(data).toString('base64');
+    const sha512 = hashLib.createSHA512(data);
     const savedPathFolder = `${process.env.BASE_FOLDER_SNAPSHOT}/${new Date().toLocaleDateString()}/${lastFolder}`;
     const fileName = Date.now();
-    const nextStoredPath = storageLib.calcSavePath(savedPathFolder, { metadata: { fileName }, data: compressed });
+    const nextStoredPath = storageLib.calcSavePath(savedPathFolder, { metadata: { fileName } });
 
     const createdFile = await Files.findOrCreate({
         defaults: {
@@ -81,15 +82,44 @@ const __createFile = async (lastFolder, { name, mimetype, truncated, size, md5, 
             truncated,
             size,
             md5,
+            sha512,
             path: nextStoredPath,
         },
         where: {
-            md5
+            md5,
+            sha512
         }
     });
+
+    const compressed = zlib.deflateSync(data).toString('base64');
     if (createdFile[1] === true) {
         const stored = storageLib.save(savedPathFolder, { metadata: { fileName }, data: compressed });
         loggerLib.log('debug', `CreatedFile saving to filesystem result: ${JSON.stringify(stored)}`);
+    } else {
+        const existingFilePath = createdFile[0].path;
+        const existingStored = storageLib.read(existingFilePath);
+        const equalFiles = collisionLib.areEqual(existingStored, compressed);
+        loggerLib.log('debug', `Collision check result: ${equalFiles}`);
+        if (equalFiles) {
+            const Collisions = DB.getConn().models.collisions;
+            loggerLib.log('debug', `COLLISION DETECTED at ${JSON.stringify(createdFile[0])}`);
+
+            const stored = storageLib.save(savedPathFolder, { metadata: { fileName }, data: compressed });
+            const savedCollisionedFile = await Files.create({
+                name,
+                mimetype,
+                truncated,
+                size,
+                md5,
+                sha512,
+                path: stored.path,
+            });
+
+            await Collisions.create({
+                exFile: createdFile[0].id,
+                withFile: savedCollisionedFile.id,
+            });
+        }
     }
     loggerLib.log('debug', `CreatedFile DB alreadyExists: ${!createdFile[1]}`);
     return createdFile.length === 2 ? createdFile[0] : false;

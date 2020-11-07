@@ -2,33 +2,18 @@ const { DataTypes } = require('sequelize');
 const commonOptions = require('./commonOptions');
 
 module.exports = {
-    name: "files",
+    name: "collisions",
     attributes: {
         id: {
             type: DataTypes.BIGINT,
             primaryKey: true,
             autoIncrement: true,
         },
-        name: {
-            type: DataTypes.STRING,
+        exFile: {
+            type: DataTypes.BIGINT,
         },
-        mimetype: {
-            type: DataTypes.STRING
-        },
-        truncated: {
-            type: DataTypes.BOOLEAN,
-        },
-        size: {
-            type: DataTypes.NUMBER,
-        },
-        md5: {
-            type: DataTypes.STRING,
-        },
-        sha512: {
-            type: DataTypes.STRING,
-        },
-        path: {
-            type: DataTypes.STRING,
+        withFile: {
+            type: DataTypes.BIGINT,
         },
         createdAt: {
             type: DataTypes.TIME,
@@ -39,7 +24,7 @@ module.exports = {
     },
     options: {
         ...commonOptions,
-        tableName: "files"
+        tableName: "collisions"
     },
     requires: []
 }
