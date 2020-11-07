@@ -27,9 +27,13 @@ const save = (folderPath, { metadata, data }) => {
 const read = (filePath) => {
     if (!filePath) throw new Error('ERR_NO_FOLDER_PATH');
     const splitedPath = filePath.split('/');
-    const folder = kfs(splitedPath[0]);
-    const fileData = folder[splitedPath[1]]
-    
+    const fileName = splitedPath[splitedPath.length - 1];
+
+    delete splitedPath[splitedPath.length - 1];
+
+    const folder = kfs(splitedPath.join('/'));
+    const fileData = folder[fileName];
+
     return fileData;
 }
 
@@ -47,7 +51,7 @@ const del = (folderPath, { metadata }) => {
     return folder[metadata.fileName] ? false : true;
 }
 
-const calcSavePath = (folderPath, { metadata}) => {
+const calcSavePath = (folderPath, { metadata }) => {
     return `${folderPath}/${metadata.fileName}`;
 }
 module.exports.save = save;

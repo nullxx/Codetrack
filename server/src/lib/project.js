@@ -92,37 +92,52 @@ const __createFile = async (lastFolder, { name, mimetype, truncated, size, md5, 
     });
 
     const compressed = zlib.deflateSync(data).toString('base64');
-    if (createdFile[1] === true) {
+    let toReturn = createdFile[0];
+
+    loggerLib.log('debug', `CreatedFile DB alreadyExists: ${!createdFile[createdFile.length - 1]}`);
+
+    if (createdFile[createdFile.length - 1] === true) {
         const stored = storageLib.save(savedPathFolder, { metadata: { fileName }, data: compressed });
         loggerLib.log('debug', `CreatedFile saving to filesystem result: ${JSON.stringify(stored)}`);
     } else {
-        const existingFilePath = createdFile[0].path;
-        const existingStored = storageLib.read(existingFilePath);
-        const equalFiles = collisionLib.areEqual(existingStored, compressed);
-        loggerLib.log('debug', `Collision check result: ${equalFiles}`);
-        if (equalFiles) {
-            const Collisions = DB.getConn().models.collisions;
-            loggerLib.log('debug', `COLLISION DETECTED at ${JSON.stringify(createdFile[0])}`);
+        for (let i = 0; i < createdFile.length - 1; i++) { // createdFile.length - 1 because last is a boolean
+            const existingFileRecord = createdFile[i];
 
-            const stored = storageLib.save(savedPathFolder, { metadata: { fileName }, data: compressed });
-            const savedCollisionedFile = await Files.create({
-                name,
-                mimetype,
-                truncated,
-                size,
-                md5,
-                sha512,
-                path: stored.path,
-            });
+            const existingFilePath = existingFileRecord.path;
+            const existingStored = storageLib.read(existingFilePath);
+            const equalFiles = collisionLib.areEqual(existingStored, compressed);
 
-            await Collisions.create({
-                exFile: createdFile[0].id,
-                withFile: savedCollisionedFile.id,
-            });
+            loggerLib.log('debug', `Collision happened: ${!equalFiles}`);
+
+            if (!equalFiles) { // if this hash was in the database and the files are not the same COLLISION happens
+                const Collisions = DB.getConn().models.collisions;
+                loggerLib.log('debug', `COLLISION DETECTED at ${JSON.stringify(existingFileRecord)}`);
+
+                const storedCollision = storageLib.save(savedPathFolder, { metadata: { fileName }, data: compressed });
+                loggerLib.log('debug', `Save to filesystem file collision result: ${JSON.stringify(storedCollision)}`);
+
+                const savedCollisionedFile = await Files.create({
+                    name,
+                    mimetype,
+                    truncated,
+                    size,
+                    md5,
+                    sha512,
+                    path: storedCollision.path,
+                });
+                loggerLib.log('debug', `Save collision file to DB ${JSON.stringify(savedCollisionedFile)}`);
+                toReturn = savedCollisionedFile;
+
+                const savedCollision = await Collisions.create({
+                    exFile: existingFileRecord.id,
+                    withFile: savedCollisionedFile.id,
+                });
+                loggerLib.log('debug', `Save collision record to DB ${JSON.stringify(savedCollision)}`);
+            }
         }
     }
-    loggerLib.log('debug', `CreatedFile DB alreadyExists: ${!createdFile[1]}`);
-    return createdFile.length === 2 ? createdFile[0] : false;
+
+    return toReturn;
 }
 /**
  * Check if client localFilePath is existing. If not exists creates new record
