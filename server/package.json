@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node -e \"require('./src/scripts/exportDotenv.script')('.env')\" && node ./bin/www",
-    "dev": "node -e \"require('./src/scripts/exportDotenv.script')('.env')\" && nodemon ./bin/www",
+    "start": "node -r dotenv/config ./bin/www dotenv_config_path=.env",
+    "dev": "nodemon -r dotenv/config ./bin/www dotenv_config_path=.env",
     "lint": "eslint \"./**/*.js\" --quiet",
     "lintFull": "eslint \"./**/*.js\"",
     "lintFix": "eslint --fix './**/*.js'",
@@ -13,13 +13,17 @@
   "dependencies": {
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
+    "dotenv": "^8.2.0",
     "express": "~4.16.1",
+    "express-fileupload": "^1.2.0",
+    "express-validation": "^3.0.6",
     "http-errors": "~1.6.3",
     "jsonwebtoken": "^8.5.1",
+    "mariadb": "^2.5.1",
     "morgan": "~1.9.1",
-    "mysql2": "^2.2.5",
     "sequelize": "^6.3.5",
-    "simple-node-logger": "^18.12.24"
+    "winston": "^3.3.3",
+    "zlib": "^1.0.5"
   },
   "devDependencies": {
     "eslint": "^6.8.0",

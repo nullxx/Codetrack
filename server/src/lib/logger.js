@@ -1,20 +1,29 @@
-var fs = require('fs');
-const logPath = 'log';
-if (!fs.existsSync(logPath)) {
-    fs.mkdirSync(logPath);
-}
 
-const SimpleNodeLogger = require('simple-node-logger');
-const __logger = SimpleNodeLogger.createSimpleLogger({
-    logFilePath: `${logPath}/all.log`,
-    timestampFormat: 'YYYY-MM-DD HH:mm:ss.SSS'
+
+
+const winston = require('winston');
+
+const __logger = winston.createLogger({
+    level: process.env.LOGGING_BASE_LEVEL,
+    format: winston.format.simple(),
+    defaultMeta: { service: 'user-service' },
+    transports: [
+        new winston.transports.Console(),
+        new winston.transports.File({ filename: `${process.env.LOG_PATH}/error.log`, level: 'error' }),
+        new winston.transports.File({ filename: `${process.env.LOG_PATH}/combined.log` }),
+    ],
 });
 
 const log = (type, ...args) => {
     let log = '';
     for (let i = 0; i < args.length; i++) {
         const arg = args[i];
-        log += i === 0 ? arg : `\n\t${arg}`;
+        log += '\n';
+        if (i === args.length - 1 && typeof arg === 'object' && arg.user) {
+            log = `USER: ${arg.user.id}${log}`;
+        } else {
+            log += `\t${arg}`;
+        }
     }
     __logger.log(type, log);
 }

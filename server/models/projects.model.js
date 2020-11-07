@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize');
 const commonOptions = require('./commonOptions');
 
 module.exports = {
-    name: "roles",
+    name: "projects",
     attributes: {
         id: {
             type: DataTypes.BIGINT,
@@ -12,11 +12,24 @@ module.exports = {
         name: {
             type: DataTypes.STRING
         },
+        language: {
+            type: DataTypes.STRING
+        },
+        user: {
+            type: DataTypes.BIGINT,
+        },
+        createdAt: {
+            type: DataTypes.TIME,
+        },
+        updatedAt: {
+            type: DataTypes.TIME,
+        }
     },
     options: {
         ...commonOptions,
-        tableName: "roles"
-    }
+        tableName: "projects"
+    },
+    requires: []
 }
 
 

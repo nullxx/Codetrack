@@ -1,19 +1,31 @@
-const { authUtils } = require('../utils');
-authUtils // temporal (for lint)
+const DB = require('../lib/database');
+
 /**
  * Authorize level 1
  * @param {Request} req express request
- * @param {Response} res express response
- * @param {Next} next express next function
+ * @param {Response} _res express response
+ * @param {Next} _next express next function
  */
-const authorize = (req, res, next) => {
-    // TODO 
-    // TODO VALIDATION
-    req, res, next // temporal (for lint)
-    // search database
-    // authUtils.sign(foundId, process.env.JWT_SECRET);
-
+const login = async (req, _res, next) => {
+    try {
+        const { email, password } = req.body;
+        const User = DB.getConn().models.users;
+        const user = await User.findAll({
+            where: {
+                email,
+                password,
+            },
+            raw: true,
+        });
+        req.user = user[0];
+        if (!req.user) {
+            throw new Error('ERR_USER_NOT_FOUND');
+        }
+    } catch (error) {
+        next(error);
+    }
+    next();
 };
 
 
-module.exports.authorize = authorize;
+module.exports.login = login;

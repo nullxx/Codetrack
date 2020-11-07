@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
 
-const { authorize } = require('../../lib/auth');
+const { login } = require('../../lib/auth');
 const controller = require('../controllers/auth.controller');
 // login
 router.post('/',
-    authorize,
+    login,
     controller.login
 );
 

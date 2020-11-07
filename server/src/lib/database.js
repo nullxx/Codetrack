@@ -1,10 +1,14 @@
 const { Sequelize } = require('sequelize');
 
 const loggerLib = require('../lib/logger');
+
+const { initModels } = require('../../models');
 /**
  * Creates connection to DB
  */
-module.exports.createConn = () => {
+let __connection;
+
+module.exports.createConn = async () => {
 
     const sequelize = new Sequelize(
         process.env.DB_NAME,
@@ -19,9 +23,17 @@ module.exports.createConn = () => {
             logging: process.env.DB_LOGGING_ENABLED === 'TRUE' ? (msg) => loggerLib.log('debug', 'DATABASE', msg) : false,
         }
     );
-    return sequelize.authenticate;
-
+    
+    await sequelize.authenticate();
+    __connection = sequelize;
+    loggerLib.log('debug', 'DB connection established', true);
+    return true;
 }
 
+module.exports.initModels = async (conn) => {
+    await initModels(conn);
+}
 
-
+module.exports.getConn = () => {
+    return __connection;
+}

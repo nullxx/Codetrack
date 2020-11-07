@@ -7,7 +7,6 @@
 var initializeApp = require('../app');
 var debug = require('debug')('server:server');
 var http = require('http');
-
 (async () => {
   const app = await initializeApp();
   /**
