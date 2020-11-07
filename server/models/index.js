@@ -7,6 +7,9 @@ const RolesPreModel = require('../models/roles.model');
 const UsersPreModel = require('../models/users.model');
 const ProjectsPreModel = require('../models/projects.model');
 const SnapshotPreModel = require('../models/snapshots.model');
+const FilesPreModel = require('../models/files.model');
+const ProjectFilesPreModel = require('../models/projectFiles.model');
+
 // END IMPORT MODELS
 
 const models = [
@@ -14,6 +17,8 @@ const models = [
     UsersPreModel,
     ProjectsPreModel,
     SnapshotPreModel,
+    FilesPreModel,
+    ProjectFilesPreModel,
 ];
 /**
  * Define all models

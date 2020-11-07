@@ -8,7 +8,7 @@ const { authorize } = require('../middlewares/auth.middleware');
 const controller = require('../controllers/project.controller');
 const { create } = require('../validations/project.root.validation');
 
-// login
+
 router
     .route('/')
     .get(
