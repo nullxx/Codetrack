@@ -46,6 +46,10 @@ const del = (folderPath, { metadata }) => {
     return folder[metadata.fileName] ? false : true;
 }
 
+const calcSavePath = (folderPath, { metadata}) => {
+    return `${folderPath}/${metadata.fileName}`;
+}
 module.exports.save = save;
 module.exports.read = read;
 module.exports.delete = del;
+module.exports.calcSavePath = calcSavePath;

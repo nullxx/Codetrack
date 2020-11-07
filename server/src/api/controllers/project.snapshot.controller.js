@@ -3,7 +3,7 @@ const loggerLib = require('../../lib/logger');
 const { createSnapshot, createMultipleSnapshots } = require('../../lib/project');
 
 
-const __checkSize = (data, req) => {
+const __checkSize = (data, req) => { // this should be a middleware
     if (Array.isArray(data)) {
         for (let i = 0; i < data.length; i++) {
             const newData = data[i];

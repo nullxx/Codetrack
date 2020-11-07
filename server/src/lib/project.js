@@ -71,7 +71,8 @@ const __createFile = async (lastFolder, { name, mimetype, truncated, size, md5, 
 
     const compressed = zlib.deflateSync(data).toString('base64');
     const savedPathFolder = `${process.env.BASE_FOLDER_SNAPSHOT}/${new Date().toLocaleDateString()}/${lastFolder}`;
-    const stored = storageLib.save(savedPathFolder, { metadata: { fileName: Date.now() }, data: compressed });
+    const fileName = Date.now();
+    const nextStoredPath = storageLib.calcSavePath(savedPathFolder, { metadata: { fileName }, data: compressed });
 
     const createdFile = await Files.findOrCreate({
         defaults: {
@@ -80,13 +81,17 @@ const __createFile = async (lastFolder, { name, mimetype, truncated, size, md5, 
             truncated,
             size,
             md5,
-            path: stored.path,
+            path: nextStoredPath,
         },
         where: {
             md5
         }
     });
-    loggerLib.log('debug', `CreatedFile alreadyExists: ${!createdFile[1]}`)
+    if (createdFile[1] === true) {
+        const stored = storageLib.save(savedPathFolder, { metadata: { fileName }, data: compressed });
+        loggerLib.log('debug', `CreatedFile saving to filesystem result: ${stored}`);
+    }
+    loggerLib.log('debug', `CreatedFile DB alreadyExists: ${!createdFile[1]}`);
     return createdFile.length === 2 ? createdFile[0] : false;
 }
 /**
