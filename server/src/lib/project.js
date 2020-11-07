@@ -89,7 +89,7 @@ const __createFile = async (lastFolder, { name, mimetype, truncated, size, md5, 
     });
     if (createdFile[1] === true) {
         const stored = storageLib.save(savedPathFolder, { metadata: { fileName }, data: compressed });
-        loggerLib.log('debug', `CreatedFile saving to filesystem result: ${stored}`);
+        loggerLib.log('debug', `CreatedFile saving to filesystem result: ${JSON.stringify(stored)}`);
     }
     loggerLib.log('debug', `CreatedFile DB alreadyExists: ${!createdFile[1]}`);
     return createdFile.length === 2 ? createdFile[0] : false;
