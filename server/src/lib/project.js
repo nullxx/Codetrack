@@ -11,7 +11,11 @@ const getProjects = async (userId) => {
     const userProjects = await Project.findAll({
         where: {
             user: userId
-        }
+        },
+        include: [ {
+            model: DB.getConn().models.users,
+            as: 'fk_user'
+        } ]
     });
     return userProjects;
 }
