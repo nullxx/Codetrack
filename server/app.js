@@ -36,7 +36,7 @@ const initialize = async () => {
     });
     return app;
   } catch (error) {
-    libLogger.log('error', `Initialization error.`, error.message, error.stack); // without await it will continue executing
+    libLogger.log('error', `Initialization error.`, error.message, error.stack);
   }
 };
 
