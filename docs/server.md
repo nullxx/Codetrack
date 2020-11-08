@@ -46,5 +46,5 @@ Por lo tanto un snapshot será:
 * file: ID: 1 (archivo guardado en el sistema de archivos que esta referenciado en la base de datos con id=1)
 * archivo: ID: 3 => `src/main/Main.java` (referencia de el archivo que estamos guardando)
 
-### Colisiones
+### [Colisiones](https://es.wikipedia.org/wiki/Colisi%C3%B3n_(hash))
 Para evitar colisiones se utilizan dos algoritmos de hashing al mismo tiempo. [MD5](https://es.wikipedia.org/wiki/MD5) Y [SHA512](https://es.wikipedia.org/wiki/SHA-2) son los afortundos. De todas formas si cualquiera de estos dos colisionara a la vez (muy poco probable) la colisión sería guardada en la base de datos para un posterior análisis.
