@@ -2,7 +2,7 @@ const { Sequelize } = require('sequelize');
 
 const loggerLib = require('../lib/logger');
 
-const { initModels } = require('../../models');
+const { initModels } = require('../models');
 /**
  * Creates connection to DB
  */
