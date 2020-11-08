@@ -13,7 +13,7 @@ When recived those things, we create a record at `projectFiles` (at database) wi
 
 We can see it in the following diagram.
 
-![Estructura general usuarios](https://github.com/nullxx/EclipseTracker/blob/master/wiki/assets/images/db.png?raw=1)
+<img src="https://github.com/nullxx/EclipseTracker/raw/master/wiki/assets/images/db.png">
 
 
 Un snapshot siempre será creado aunque exista en el servidor un archivo identico. Que se cree un snapshot no quiere decir que guardemos la información duplicada. Cuando el archivo llega, se compara el hash de este archivo con los existentes de la base de datos. Si se encuentra un hash identico, referenciaremos ese archivo al nuevo snapshot.
