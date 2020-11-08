@@ -4,6 +4,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const fileUpload = require('express-fileupload');
 const libLogger = require('./src/lib/logger');
+require('./src/utils/error.utils');
 var indexRouter = require('./src/api/routes/index');
 
 const initialize = async () => {
@@ -31,7 +32,7 @@ const initialize = async () => {
     app.use(function (err, _req, res, _next) {
 
       res.status = err.status || 500;
-      res.send({ code: -1, error: err.message || 'Unknown error' });
+      res.send({ code: -1, error: err.toJSON() });
     });
     return app;
   } catch (error) {

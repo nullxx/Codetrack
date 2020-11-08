@@ -6,7 +6,6 @@ module.exports = {
         body: Joi.object({
             project: Joi.number().required(),
             localPath: Joi.string().required(),
-            data: Joi.any().meta({ swaggerType: 'file' }),
         }),
     }
 }
