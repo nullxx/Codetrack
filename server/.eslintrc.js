@@ -15,8 +15,6 @@ module.exports = {
         sourceType: "module",
     },
     // plugins: [],
-    rules: {
-        "no-console": "off", // "warn" // "off"
-    },
+    rules: {},
     settings: {},
 };
