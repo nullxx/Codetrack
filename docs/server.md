@@ -1,3 +1,10 @@
+## File hashing
+
+Para diferenciar entre distintos archivos utilizamos el hashing. Es un método muy utilizado para encontrar diferencias entre archivos.
+
+Un hash es un conjunto de letras y numeros de longitud variable  que identifica únicamente al input que le des. En nuestro caso cada archivo tedrá un único hash (ver [colisiones](#colisiones)) 
+
+
 ## Snapshots
  
 To create a snapshot we just need the base local path, and the file (with its attributes). 
@@ -38,3 +45,6 @@ Por lo tanto un snapshot será:
 
 * file: ID: 1 (archivo guardado en el sistema de archivos que esta referenciado en la base de datos con id=1)
 * archivo: ID: 3 => `src/main/Main.java` (referencia de el archivo que estamos guardando)
+
+### Colisiones
+Para evitar colisiones se utilizan dos algoritmos de hashing al mismo tiempo. MD5 Y SHA512 son los afortundos. De todas formas si cualquiera de estos dos colisionara a la vez (muy poco probable) la colisión sería guardada en la base de datos para un posterior análisis.
