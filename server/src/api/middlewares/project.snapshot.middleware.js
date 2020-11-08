@@ -11,7 +11,7 @@ const validateFile = (req, res, next) => {
         next(error);
     }
 }
-const checkSize = (req, res, next) => { // this should be a middleware
+const checkSize = (req, res, next) => {
     const { data } = req.files;
     try {
         if (Array.isArray(data)) {
