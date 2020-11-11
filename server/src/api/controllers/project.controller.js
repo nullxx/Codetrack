@@ -4,7 +4,7 @@ const { getProjects, createProject } = require('../../lib/project');
 const list = async (req, res, next) => {
     try {
         const listedProjects = await getProjects(req.user.id);
-        res.send(listedProjects);
+        res.send({ code: 1, data: listedProjects });
         loggerLib.log('info', '/project - list', 'Listed projects', req);
     } catch (error) {
         loggerLib.log('error', '/project - list', error, req);
@@ -16,7 +16,7 @@ const create = async (req, res, next) => {
     const { name, language } = req.body;
     try {
         const created = await createProject({ name, language, user: req.user.id });
-        res.send(created);
+        res.send({ code: 1, data: created });
         loggerLib.log('info', '/project - create', `Created project id: ${created.id}`, req);
     } catch (error) {
         loggerLib.log('error', '/project - create', error, req);
