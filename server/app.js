@@ -4,7 +4,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const fileUpload = require('express-fileupload');
 const libLogger = require('./src/lib/logger');
-require('./src/utils/error.utils');
+require('./src/utils').errorUtils;
 var indexRouter = require('./src/api/routes/index');
 
 const initialize = async () => {
