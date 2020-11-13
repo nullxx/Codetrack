@@ -17,10 +17,13 @@ module.exports = {
         },
         user: {
             type: DataTypes.BIGINT,
-            references: {
-                model: 'users',
-                key: 'id'
-            }
+            // references: {
+            //     model: 'users',
+            //     key: 'id'
+            // }
+        },
+        isAllowed: {
+            type: DataTypes.BOOLEAN,
         },
         createdAt: {
             type: DataTypes.TIME,

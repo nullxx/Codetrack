@@ -6,7 +6,7 @@ const router = express.Router();
 
 const { authorize } = require('../middlewares/auth.middleware');
 const controller = require('../controllers/project.controller');
-const { create } = require('../validations/project.root.validation');
+const { create, update } = require('../validations/project.root.validation');
 
 
 router
@@ -15,10 +15,15 @@ router
         authorize,
         controller.list
     )
-    .put(
+    .post(
         authorize,
         validate(create),
         controller.create
+    )
+    .put(
+        authorize,
+        validate(update),
+        controller.update
     )
 
 module.exports = router;

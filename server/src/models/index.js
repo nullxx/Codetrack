@@ -1,6 +1,6 @@
 const loggerLib = require('../lib/logger');
 
-const { defineModel } = require('../utils/models.utils');
+const { modelsUtils: { defineModel } } = require('../utils');
 
 // BEGIN IMPORT MODELS
 const RolesPreModel = require('./roles.model');

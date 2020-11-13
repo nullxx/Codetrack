@@ -4,6 +4,8 @@ const collisionLib = require('./collision');
 const hashLib = require('./hash');
 const storageLib = require('./storage');
 const DB = require('./database');
+const { projectUtils: { checkChanged } } = require('../utils');
+
 
 const getProjects = async (userId) => {
     const Project = DB.getConn().models.projects;
@@ -12,10 +14,10 @@ const getProjects = async (userId) => {
         where: {
             user: userId
         },
-        include: [ {
+        include: [{
             model: DB.getConn().models.users,
             as: 'fk_user'
-        } ]
+        }]
     });
     return userProjects;
 }
@@ -30,6 +32,22 @@ const createProject = async ({ name, language, user }) => {
         user,
     });
     return createdProject;
+}
+
+const updateProject = async ({ name, isAllowed, project, user }) => {
+    const Project = DB.getConn().models.projects;
+    const toUpdate = checkChanged({ name, isAllowed });
+
+    const updatedProject = await Project.update(
+        toUpdate,
+        {
+            where: {
+                id: project,
+                user,
+            }
+        }
+    );
+    return updatedProject[0] === 1;
 }
 
 // 'localPath' is the base path for the file in 'fileData'
@@ -170,5 +188,6 @@ const __checkProjectFilesLocalPath = async (localFilePath, project) => {
 
 module.exports.getProjects = getProjects;
 module.exports.createProject = createProject;
+module.exports.updateProject = updateProject;
 module.exports.createSnapshot = createSnapshot;
 module.exports.createMultipleSnapshots = createMultipleSnapshots;
