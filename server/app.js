@@ -23,16 +23,28 @@ const initialize = async () => {
     app.use(fileUpload({
       limits: { fileSize: 50 * 1024 * 1024 },
     }));
-    
+
     app.use('/', indexRouter);
 
 
     // error handler
     // eslint-disable-next-line no-unused-vars
     app.use(function (err, _req, res, _next) {
+      let message = 'Unknown message';
+      let status;
+      switch (err.message) {
+        case 'UNAUTHORIZED':
+          message = 'Unauthorized';
+          status = 401;
+          break;
 
-      res.status = err.status || 500;
-      res.send({ code: -1, error: err.toJSON() });
+        default:
+          let message = err.toJSON();
+          let status = 500;
+      }
+
+      res.status = status;
+      res.send({ code: -1, error: message });
     });
     return app;
   } catch (error) {
