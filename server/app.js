@@ -39,8 +39,8 @@ const initialize = async () => {
           break;
 
         default:
-          let message = err.toJSON();
-          let status = 500;
+          message = err.toJSON();
+          status = 500;
       }
 
       res.status = status;
