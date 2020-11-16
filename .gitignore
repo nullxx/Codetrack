@@ -4,5 +4,6 @@ package-lock.json
 *.log
 
 uploads/
-
+lib/
+lib2/
 .DS_Store

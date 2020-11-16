@@ -1,27 +1,80 @@
 package codetrack.api;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.net.URI;
-import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map.Entry;
+import java.util.List;
+import java.util.Random;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonIOException;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import codetrack.Config;
+import codetrack.Storage;
+
 public class HttpCaller {
-	final static String charset = "UTF-8";
 	private final static HttpClient httpClient = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).build();
 
-	public static JsonObject POST(String url, HashMap<String, Object> data) throws IOException, InterruptedException {
+	private static void processAuthResponse(JsonObject response) throws JsonIOException, IOException {
+		JsonElement data = response.get(Config.REMOTE_RESPONSE_KEY_DATA);
+		JsonElement error = response.get(Config.REMOTE_RESPONSE_KEY_ERROR); // TODO
+		if (error != null && !error.isJsonNull()) {
+			System.err.println(error);
+		} else if (data != null && !data.isJsonNull()) {
+			if (data.getAsJsonObject().get(Config.REMOTE_RESPONSE_KEY_TOKEN) != null) {
+				Storage storage = new Storage();
+				storage.saveProp(Config.LOCAL_STORAGE_KEY_BEARER_TOKEN, data.getAsJsonObject().get(Config.REMOTE_RESPONSE_KEY_TOKEN).getAsString());
+			}
+		}
+	}
 
-		HttpRequest request = HttpRequest.newBuilder().POST(buildFormDataFromMap(data))
-				.uri(URI.create(url)).header("Content-Type", "application/x-www-form-urlencoded")
-				.build();
+	private static String getAuthToken() throws JsonIOException, IOException {
+		Storage storage = new Storage();
+		return storage.getString(Config.LOCAL_STORAGE_KEY_BEARER_TOKEN);
+	}
+
+	public static JsonObject POST(String url, HashMap<String, Object> data) throws IOException, InterruptedException {
+		String boundary = new BigInteger(256, new Random()).toString();
+		HttpRequest.BodyPublisher bodyPublisher = buildFormDataFromMap(data, boundary);
+		HttpRequest request = HttpRequest.newBuilder().POST(bodyPublisher).uri(URI.create(url))
+				.header("Content-Type", "multipart/form-data;boundary=" + boundary)
+				.header("Authorization", String.format(Config.HTTP_HEADER_BEARER_TOKEN, HttpCaller.getAuthToken())).build();
+
+		HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+		JsonObject res = (JsonObject) new JsonParser().parse(response.body());
+		HttpCaller.processAuthResponse(res);
+		return res;
+
+	}
+
+	public static JsonObject PUT(String url, HashMap<String, Object> data) throws IOException, InterruptedException {
+		String boundary = new BigInteger(256, new Random()).toString();
+		HttpRequest.BodyPublisher bodyPublisher = buildFormDataFromMap(data, boundary);
+		HttpRequest request = HttpRequest.newBuilder().PUT(bodyPublisher).uri(URI.create(url))
+				.header("Content-Type", "multipart/form-data;boundary=" + boundary)
+				.header("Authorization", String.format(Config.HTTP_HEADER_BEARER_TOKEN, HttpCaller.getAuthToken())).build();
+
+		HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+		JsonObject res = (JsonObject) new JsonParser().parse(response.body());
+		return res;
+
+	}
+
+	public static JsonObject GET(String url) throws IOException, InterruptedException {
+
+		HttpRequest request = HttpRequest.newBuilder().GET().uri(URI.create(url))
+				.header("Authorization", String.format(Config.HTTP_HEADER_BEARER_TOKEN, HttpCaller.getAuthToken())).build();
 
 		HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
@@ -31,17 +84,33 @@ public class HttpCaller {
 
 	}
 
-	private static HttpRequest.BodyPublisher buildFormDataFromMap(HashMap<String, Object> data) {
-		var builder = new StringBuilder();
-		for (Entry<String, Object> entry : data.entrySet()) {
-			if (builder.length() > 0) {
-				builder.append("&");
+	public static HttpRequest.BodyPublisher buildFormDataFromMap(HashMap<String, Object> data, String boundary)
+			throws IOException {
+		// Result request body
+		List<byte[]> byteArrays = new ArrayList<>();
+
+		byte[] separator = ("--" + boundary + "\r\nContent-Disposition: form-data; name=")
+				.getBytes(Config.HTTP_CHARSET);
+
+		for (HashMap.Entry<String, Object> entry : data.entrySet()) {
+
+			byteArrays.add(separator);
+
+			if (entry.getValue() instanceof Path) {
+				var path = (Path) entry.getValue();
+				String mimeType = Files.probeContentType(path);
+				byteArrays.add(("\"" + entry.getKey() + "\"; filename=\"" + path.getFileName() + "\"\r\nContent-Type: "
+						+ mimeType + "\r\n\r\n").getBytes(Config.HTTP_CHARSET));
+				byteArrays.add(Files.readAllBytes(path));
+				byteArrays.add("\r\n".getBytes(Config.HTTP_CHARSET));
+			} else {
+				byteArrays.add(("\"" + entry.getKey() + "\"\r\n\r\n" + entry.getValue() + "\r\n")
+						.getBytes(Config.HTTP_CHARSET));
 			}
-			builder.append(URLEncoder.encode(entry.getKey().toString(), StandardCharsets.UTF_8));
-			builder.append("=");
-			builder.append(URLEncoder.encode(entry.getValue().toString(), StandardCharsets.UTF_8));
 		}
-		System.out.println(builder.toString());
-		return HttpRequest.BodyPublishers.ofString(builder.toString());
+
+		byteArrays.add(("--" + boundary + "--").getBytes(Config.HTTP_CHARSET));
+
+		return HttpRequest.BodyPublishers.ofByteArrays(byteArrays);
 	}
 }

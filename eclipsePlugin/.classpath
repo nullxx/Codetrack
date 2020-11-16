@@ -4,5 +4,40 @@
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="swing2swt.jar"/>
+
+	<!-- START do not be scared == this is for developing in VSCOE -->
+	<!-- <classpathentry kind="lib" path="lib/eclipse.jar"/> -->
+	<!-- <classpathentry kind="lib" path="lib/org.osgi.framework-1.8.0.jar"/> -->
+
+	<!-- <classpathentry kind="lib" path="lib2/org.eclipse.ui.workbench_3.120.0.v20200829-1411.jar"/>
+	<classpathentry kind="lib" path="lib2/org.eclipse.ui_3.118.0.v20200807-0902.jar"/>
+	<classpathentry kind="lib" path="lib2/org.eclipse.core.runtime_3.19.0.v20200724-1004.jar"/>
+	<classpathentry kind="lib" path="lib2/org.apache.commons.httpclient_3.1.0.v201012070820.jar"/>
+	<classpathentry kind="lib" path="lib2/com.google.gson_2.8.2.v20180104-1110.jar"/>
+	<classpathentry kind="lib" path="lib2/org.eclipse.core.resources_3.13.800.v20200706-2152.jar"/>
+	<classpathentry kind="lib" path="lib2/org.eclipse.text_3.10.300.v20200807-0831.jar"/>
+	<classpathentry kind="lib" path="lib2/org.eclipse.ui.workbench.texteditor_3.15.0.v20200812-2334.jar"/>
+	<classpathentry kind="lib" path="lib2/org.eclipse.osgi_3.16.0.v20200828-0759.jar"/>
+	<classpathentry kind="lib" path="lib2/org.eclipse.osgi.compatibility.state_1.2.100.v20200811-1344.jar"/>
+	<classpathentry kind="lib" path="lib2/org.eclipse.equinox.common_3.13.0.v20200828-1034.jar"/>
+	<classpathentry kind="lib" path="lib2/org.eclipse.core.jobs_3.10.800.v20200421-0950.jar"/>
+	<classpathentry kind="lib" path="lib2/org.eclipse.equinox.registry_3.9.0.v20200625-1425.jar"/>
+	<classpathentry kind="lib" path="lib2/org.eclipse.equinox.preferences_3.8.0.v20200422-1833.jar"/>
+	<classpathentry kind="lib" path="lib2/org.eclipse.core.contenttype_3.7.800.v20200724-0804.jar"/>
+	<classpathentry kind="lib" path="lib2/org.eclipse.equinox.app_1.5.0.v20200717-0620.jar"/>
+	<classpathentry kind="lib" path="lib2/org.eclipse.swt_3.115.0.v20200831-1002.jar"/>
+	<classpathentry kind="lib" path="lib2/org.eclipse.swt.browser.chromium.cocoa.macosx.x86_64_3.115.0.v20200831-1002.jar"/>
+	<classpathentry kind="lib" path="lib2/org.eclipse.swt.cocoa.macosx.x86_64_3.115.0.v20200831-1002.jar"/>
+	<classpathentry kind="lib" path="lib2/org.eclipse.jface_3.21.0.v20200821-1458.jar"/>
+	<classpathentry kind="lib" path="lib2/org.eclipse.core.commands_3.9.700.v20191217-1850.jar"/>
+	<classpathentry kind="lib" path="lib2/org.eclipse.e4.ui.workbench3_0.15.400.v20191216-0805.jar"/>
+	<classpathentry kind="lib" path="lib2/org.eclipse.jdt.core_3.23.0.v20200828-0941.jar"/>
+	<classpathentry kind="lib" path="lib2/org.eclipse.jdt.compiler.apt_1.3.1100.v20200828-0941.jar"/>
+	<classpathentry kind="lib" path="lib2/org.eclipse.jdt.compiler.tool_1.2.1000.v20200828-0941.jar"/>
+	<classpathentry kind="lib" path="/Users/nullx/eclipse-workspace/.metadata/.plugins/org.eclipse.pde.core/.external_libraries/org.eclipse.jdt.compiler.tool_1.2.1000.v20200828-0941/lib/java14api.jar"/>
+	<classpathentry kind="lib" path="lib2/javax.inject_1.0.0.v20091030.jar"/>
+	<classpathentry kind="lib" path="/Users/nullx/Downloads/eclipse/plugins/org.eclipse.platform_3.7.2.v201202080800/platform.jar"/> -->
+	<!-- END do not be scared == this is for developing in VSCOE -->
+
 	<classpathentry kind="output" path="bin"/>
 </classpath>
