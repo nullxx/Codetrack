@@ -1,11 +1,16 @@
 package codetrack.views;
 
 import org.eclipse.swt.widgets.Composite;
+
+import java.util.ArrayList;
+
+import javax.swing.SwingWorker;
+
 import org.eclipse.swt.graphics.Color;
 import swing2swt.layout.BorderLayout;
 
 public class CompositeWithLoader extends Composite {
-
+	private static SwingWorker loader;
 	private StatusBar statusBar;
 
 	public CompositeWithLoader(Composite parent, int style) {
@@ -16,15 +21,19 @@ public class CompositeWithLoader extends Composite {
 	}
 
 	public void setLoading(String text, boolean loading) {
-		this.setEnabled(!loading);
-		statusBar.setText(text);
-		statusBar.autoProgressBar();
+		statusBar.getDisplay().asyncExec(new Runnable() {
+		    @Override
+		    public void run() {
+		        if (statusBar.isDisposed()) return;
+		        statusBar.setLoading(loading);
+		        statusBar.setText(text);
+		        
+		        setEnabled(!loading);
+		        
+		    }
+		});
 	}
 
-	public void setLoading(String text, boolean loading, int progress) {
-		statusBar.setText(text);
-		statusBar.setProgress(progress);
-	}
 
 	public void setError(String errorMsg) {
 		Color RED = new Color(255, 0, 0);

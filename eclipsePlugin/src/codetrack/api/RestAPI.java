@@ -49,7 +49,7 @@ public class RestAPI {
 			}
 			return projects;
 		} else {
-			throw new IOException(String.format("Error from remote: ", response.get(Config.REMOTE_RESPONSE_KEY_DATA).getAsString()));
+			throw new IOException(String.format("Error from remote: %s", response.toString()));
 		}
 	}
 

@@ -1,10 +1,17 @@
 package codetrack.views;
 
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TabFolder;
 import codetrack.client.Project;
+
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.util.HashMap;
+
+import javax.swing.SwingWorker;
+
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
@@ -68,25 +75,49 @@ public class Permissions extends TabViewListener {
 	}
 
 	private void changePermisions(boolean isAllowed, int project) {
-		// set allowed false in remote,
-		// save state in local
-		HashMap<String, Object> updateData = new HashMap<String, Object>();
-		updateData.put("project", project);
-		updateData.put("isAllowed", isAllowed);
+		CompositeWithLoader parent = (CompositeWithLoader) this.getParent().getParent();
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				SwingWorker<?, ?> call = new SwingWorker<Object, Object>() {
+					@Override
+					protected Object doInBackground() throws Exception {
+						parent.setLoading("Updating...", true);
+						HashMap<String, Object> updateData = new HashMap<String, Object>();
+						updateData.put("project", project);
+						updateData.put("isAllowed", isAllowed);
 
-		try {
-			boolean successUpdating = RestAPI.updateProject(updateData);
-			if (successUpdating) {
-				this.reloadProjects();
-			} else {
-				System.err.println("Something wrong updating");
-			}
+						try {
+							boolean successUpdating = RestAPI.updateProject(updateData);
+							if (successUpdating) {
+								reloadProjects();
+							} else {
+								parent.setError("Something wrong updating");
+							}
 
-		} catch (IOException | InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+						} catch (IOException | InterruptedException e) {
+							parent.setError(String.format("Error updating: %s", e.getMessage()));
+						}
+						this.done();
+						return null;
+					}
 
+				};
+
+				call.addPropertyChangeListener(new PropertyChangeListener() {
+
+					@Override
+					public void propertyChange(PropertyChangeEvent evt) {
+						if (evt.getNewValue() == SwingWorker.StateValue.DONE) {
+							parent.setLoading("Updated!", false);
+						}
+
+					}
+
+				});
+				call.execute();
+			};
+
+		});
 	}
 
 	private void processChecks(Project[] projects) {

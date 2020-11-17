@@ -30,8 +30,8 @@ const initialize = async () => {
     // error handler
     // eslint-disable-next-line no-unused-vars
     app.use(function (err, _req, res, _next) {
-      let message = 'Unknown message';
-      let status;
+      let message = err.message;
+      let status = err.status;
       switch (err.message) {
         case 'UNAUTHORIZED':
           message = 'Unauthorized';

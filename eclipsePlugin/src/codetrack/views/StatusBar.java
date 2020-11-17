@@ -25,9 +25,9 @@ public class StatusBar extends Composite {
 	 */
 	public StatusBar(Composite parent, int style) {
 		super(parent, style);
-
+		
 		setLayout(new FormLayout());
-		progressBar = new ProgressBar(this, SWT.NONE);
+		this.setupProgressBar(false);
 		progressBar.setBackground(SWTResourceManager.getColor(SWT.COLOR_TRANSPARENT));
 		FormData fd_progressBar = new FormData();
 		fd_progressBar.right = new FormAttachment(100, -10);
@@ -54,40 +54,40 @@ public class StatusBar extends Composite {
 		labelInfo.setText(text);
 	}
 
-	public void setProgress(int progress) {
-		progressBar.setSelection((progress) % (progressBar.getMaximum()));
+	public void setLoading(boolean loading) {
+		if (loading) {
+			this.setupProgressBar(true);
+			return;
+		}
+		
+		this.setupProgressBar(false);
 	}
 
-	public void autoProgressBar() {
-		new Thread(new Runnable() {
-			private int progress = 0;
-			private static final int INCREMENT = Config.INCREMENT_AUTO_PROGRESSBAR_AMOUNT;
+	private void setupProgressBar(boolean indeterminated) {
+		if (progressBar != null) {
+			progressBar.dispose();
+		}
+		if (indeterminated) {
+			progressBar = new ProgressBar(this, SWT.NONE | SWT.INDETERMINATE);
+		} else {
+			progressBar = new ProgressBar(this, SWT.NONE);
+		}
 
-			@Override
-			public void run() {
-				while (!progressBar.isDisposed()) {
-					Display.getDefault().asyncExec(new Runnable() {
-						@Override
-						public void run() {
-							if (progressBar.isDisposed())
-								return;
-							if (progressBar.getMaximum() >= progress) {
-								progressBar
-										.setSelection((progress += INCREMENT) % (progressBar.getMaximum() + INCREMENT));
-							}
-						}
-					});
+		FormData fd_progressBar = new FormData();
+		fd_progressBar.right = new FormAttachment(100, -10);
+		fd_progressBar.top = new FormAttachment(0, 24);
+		fd_progressBar.bottom = new FormAttachment(100, -24);
+		fd_progressBar.left = new FormAttachment(labelInfo, 6);
 
-					try {
-						Thread.sleep(Config.INTERVAL_AUTO_PROGRESSBAR_MS);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		}).start();
+		progressBar.setLayoutData(fd_progressBar);
+		this.update();
+		this.layout();
+		progressBar.setParent(this);
+		this.layout(true, true);
+		this.getParent().update();
+		this.getParent().layout(true, true);
+		
 	}
-
 	@Override
 	protected void checkSubclass() {
 		// Disable the check that prevents subclassing of SWT components
