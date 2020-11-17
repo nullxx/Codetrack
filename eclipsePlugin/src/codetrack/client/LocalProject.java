@@ -10,7 +10,6 @@ import codetrack.Config;
 import codetrack.Utils;
 
 public class LocalProject {
-	private static final String projectConfigPath = Config.LOCAL_PROJECT_FILE_INFO;
 
 	private IProject originalProject;
 	private LocalProjectConfig projectConfig;
@@ -58,7 +57,7 @@ public class LocalProject {
 	}
 
 	private String getConfigFilePath() {
-		String localPath = String.format("%s/%s", this.getProjectRootPath(), projectConfigPath);
+		String localPath = String.format("%s/%s", this.getProjectRootPath(), Config.LOCAL_PROJECT_FILE_INFO);
 		return localPath;
 	}
 	private String getProjectRootPath() {

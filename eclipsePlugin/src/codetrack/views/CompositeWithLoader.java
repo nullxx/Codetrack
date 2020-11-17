@@ -10,7 +10,7 @@ import org.eclipse.swt.graphics.Color;
 import swing2swt.layout.BorderLayout;
 
 public class CompositeWithLoader extends Composite {
-	private static SwingWorker loader;
+
 	private StatusBar statusBar;
 
 	public CompositeWithLoader(Composite parent, int style) {
