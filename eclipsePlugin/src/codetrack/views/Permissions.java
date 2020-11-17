@@ -41,8 +41,12 @@ public class Permissions extends TabViewListener {
 		this.addListener(new TabFocusListener() {
 			@Override
 			public void refresh() {
-				Permissions.this.setProjects();
-
+				try {
+					Project.processProjects();
+					Permissions.this.setProjects();
+				} catch (IOException | InterruptedException e) {
+					((CompositeWithLoader) parent.getParent()).setError(String.format("Error %s", e.getMessage()));
+				}
 			}
 		});
 		checkboxTableViewer.addCheckStateListener(new ICheckStateListener() {
