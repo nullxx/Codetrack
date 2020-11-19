@@ -93,7 +93,7 @@ const __createFile = async (lastFolder, { name, mimetype, truncated, size, md5, 
     const Files = DB.getConn().models.files;
 
     const sha512 = hashLib.createSHA512(data);
-    const savedPathFolder = `${process.env.BASE_FOLDER_SNAPSHOT}/${new Date().toLocaleDateString(process.env.SNAPSHOT_FOLDER_TIME_LOCAL)}/${lastFolder}`;
+    const savedPathFolder = `${process.env.BASE_FOLDER_SNAPSHOT}/${new Date().toISOString().slice(0, 10)}/${lastFolder}`;
     const fileName = Date.now();
     const nextStoredPath = storageLib.calcSavePath(savedPathFolder, { metadata: { fileName } });
 
