@@ -2,7 +2,7 @@ const { Sequelize } = require('sequelize');
 
 const loggerLib = require('../lib/logger');
 
-const { initModels } = require('../models');
+const { initModels } = require('../models/init-models');
 /**
  * Creates connection to DB
  */
@@ -23,7 +23,7 @@ module.exports.createConn = async () => {
             logging: process.env.DB_LOGGING_ENABLED === 'TRUE' ? (msg) => loggerLib.log('debug', 'DATABASE', msg) : false,
         }
     );
-    
+
     await sequelize.authenticate();
     __connection = sequelize;
     loggerLib.log('debug', 'DB connection established', true);
@@ -31,7 +31,7 @@ module.exports.createConn = async () => {
 }
 
 module.exports.initModels = async (conn) => {
-    await initModels(conn);
+    initModels(conn);
 }
 
 module.exports.getConn = () => {

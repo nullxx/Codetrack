@@ -14,10 +14,6 @@ const getProjects = async (userId) => {
         where: {
             user: userId
         },
-        include: [{
-            model: DB.getConn().models.users,
-            as: 'fk_user'
-        }]
     });
     return userProjects;
 }

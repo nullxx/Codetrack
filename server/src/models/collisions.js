@@ -2,41 +2,41 @@
 
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('projectObservations', {
+  return sequelize.define('collisions', {
     id: {
       autoIncrement: true,
       type: DataTypes.BIGINT.UNSIGNED,
       allowNull: false,
       primaryKey: true
     },
-    project: {
+    exFile: {
       type: DataTypes.BIGINT.UNSIGNED,
       allowNull: true,
       references: {
-        model: 'projects',
+        model: 'files',
         key: 'id'
       }
     },
-    observation: {
-      type: DataTypes.STRING(255),
+    withFile: {
+      type: DataTypes.BIGINT.UNSIGNED,
       allowNull: true,
       references: {
-        model: 'observations',
-        key: 'shortId'
+        model: 'files',
+        key: 'id'
       }
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      allowNull: true
     },
     createdAt: {
       type: DataTypes.DATE,
       allowNull: true,
       defaultValue: Sequelize.fn('current_timestamp')
-    },
-    updatedAt: {
-      type: DataTypes.DATE,
-      allowNull: true
     }
   }, {
     sequelize,
-    tableName: 'projectObservations',
+    tableName: 'collisions',
     schema: 'eclipsetracker',
     timestamps: false,
     indexes: [
@@ -57,17 +57,17 @@ module.exports = function(sequelize, DataTypes) {
         ]
       },
       {
-        name: "project",
+        name: "exFile",
         using: "BTREE",
         fields: [
-          { name: "project" },
+          { name: "exFile" },
         ]
       },
       {
-        name: "observation",
+        name: "withFile",
         using: "BTREE",
         fields: [
-          { name: "observation" },
+          { name: "withFile" },
         ]
       },
     ]

@@ -2,28 +2,28 @@
 
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('projectObservations', {
+  return sequelize.define('groups', {
     id: {
       autoIncrement: true,
       type: DataTypes.BIGINT.UNSIGNED,
       allowNull: false,
       primaryKey: true
     },
-    project: {
+    superUser: {
       type: DataTypes.BIGINT.UNSIGNED,
       allowNull: true,
       references: {
-        model: 'projects',
+        model: 'users',
         key: 'id'
       }
     },
-    observation: {
+    name: {
       type: DataTypes.STRING(255),
-      allowNull: true,
-      references: {
-        model: 'observations',
-        key: 'shortId'
-      }
+      allowNull: true
+    },
+    description: {
+      type: DataTypes.STRING(255),
+      allowNull: true
     },
     createdAt: {
       type: DataTypes.DATE,
@@ -36,7 +36,7 @@ module.exports = function(sequelize, DataTypes) {
     }
   }, {
     sequelize,
-    tableName: 'projectObservations',
+    tableName: 'groups',
     schema: 'eclipsetracker',
     timestamps: false,
     indexes: [
@@ -57,17 +57,10 @@ module.exports = function(sequelize, DataTypes) {
         ]
       },
       {
-        name: "project",
+        name: "superUser",
         using: "BTREE",
         fields: [
-          { name: "project" },
-        ]
-      },
-      {
-        name: "observation",
-        using: "BTREE",
-        fields: [
-          { name: "observation" },
+          { name: "superUser" },
         ]
       },
     ]

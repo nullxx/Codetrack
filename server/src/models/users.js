@@ -2,41 +2,42 @@
 
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('projectObservations', {
+  return sequelize.define('users', {
     id: {
       autoIncrement: true,
       type: DataTypes.BIGINT.UNSIGNED,
       allowNull: false,
       primaryKey: true
     },
-    project: {
+    email: {
+      type: DataTypes.STRING(255),
+      allowNull: true
+    },
+    password: {
+      type: DataTypes.STRING(255),
+      allowNull: true
+    },
+    role: {
       type: DataTypes.BIGINT.UNSIGNED,
       allowNull: true,
+      defaultValue: 0,
       references: {
-        model: 'projects',
+        model: 'roles',
         key: 'id'
       }
     },
-    observation: {
-      type: DataTypes.STRING(255),
-      allowNull: true,
-      references: {
-        model: 'observations',
-        key: 'shortId'
-      }
+    updatedAt: {
+      type: DataTypes.DATE,
+      allowNull: true
     },
     createdAt: {
       type: DataTypes.DATE,
       allowNull: true,
       defaultValue: Sequelize.fn('current_timestamp')
-    },
-    updatedAt: {
-      type: DataTypes.DATE,
-      allowNull: true
     }
   }, {
     sequelize,
-    tableName: 'projectObservations',
+    tableName: 'users',
     schema: 'eclipsetracker',
     timestamps: false,
     indexes: [
@@ -57,17 +58,10 @@ module.exports = function(sequelize, DataTypes) {
         ]
       },
       {
-        name: "project",
+        name: "role",
         using: "BTREE",
         fields: [
-          { name: "project" },
-        ]
-      },
-      {
-        name: "observation",
-        using: "BTREE",
-        fields: [
-          { name: "observation" },
+          { name: "role" },
         ]
       },
     ]

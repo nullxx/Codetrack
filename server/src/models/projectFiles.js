@@ -2,7 +2,7 @@
 
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('projectObservations', {
+  return sequelize.define('projectFiles', {
     id: {
       autoIncrement: true,
       type: DataTypes.BIGINT.UNSIGNED,
@@ -17,26 +17,22 @@ module.exports = function(sequelize, DataTypes) {
         key: 'id'
       }
     },
-    observation: {
+    localFilePath: {
       type: DataTypes.STRING(255),
-      allowNull: true,
-      references: {
-        model: 'observations',
-        key: 'shortId'
-      }
+      allowNull: true
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      allowNull: true
     },
     createdAt: {
       type: DataTypes.DATE,
       allowNull: true,
       defaultValue: Sequelize.fn('current_timestamp')
-    },
-    updatedAt: {
-      type: DataTypes.DATE,
-      allowNull: true
     }
   }, {
     sequelize,
-    tableName: 'projectObservations',
+    tableName: 'projectFiles',
     schema: 'eclipsetracker',
     timestamps: false,
     indexes: [
@@ -61,13 +57,6 @@ module.exports = function(sequelize, DataTypes) {
         using: "BTREE",
         fields: [
           { name: "project" },
-        ]
-      },
-      {
-        name: "observation",
-        using: "BTREE",
-        fields: [
-          { name: "observation" },
         ]
       },
     ]

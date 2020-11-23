@@ -15,10 +15,6 @@ const login = async (req, _res, next) => {
                 email,
                 password,
             },
-            include: [{
-                model: DB.getConn().models.roles,
-                as: 'fk_role'
-            }],
             raw: true,
         });
         req.user = user[0];
