@@ -4,6 +4,6 @@ package-lock.json
 *.log
 
 uploads/
-lib/
-lib2/
+eclipsePlugin/lib/
+eclipsePlugin/lib2/
 .DS_Store
