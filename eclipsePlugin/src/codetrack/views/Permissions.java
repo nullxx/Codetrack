@@ -73,11 +73,20 @@ public class Permissions extends TabViewListener {
 
 		this.processChecks(projects);
 	}
-
+	/**
+	 * Sync projects from remote 
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
 	private void reloadProjects() throws IOException, InterruptedException {
 		Project.processProjects();
+		this.setProjects();
 	}
-
+	/**
+	 * Trigger change project permissions to remote
+	 * @param isAllowed
+	 * @param project
+	 */
 	private void changePermisions(boolean isAllowed, int project) {
 		CompositeWithLoader parent = (CompositeWithLoader) this.getParent().getParent();
 		Display.getDefault().asyncExec(new Runnable() {
@@ -123,7 +132,10 @@ public class Permissions extends TabViewListener {
 
 		});
 	}
-
+	/**
+	 * Processes allowed projects => tableView
+	 * @param projects
+	 */
 	private void processChecks(Project[] projects) {
 		for (int i = 0; i < projects.length; i++) {
 			Project project = projects[i];

@@ -50,10 +50,18 @@ public class StatusBar extends Composite {
 
 	}
 
+	/**
+	 * Set the status text
+	 * @param text
+	 */
 	public void setText(String text) {
 		labelInfo.setText(text);
 	}
 
+	/**
+	 * Set loading
+	 * @param loading
+	 */
 	public void setLoading(boolean loading) {
 		if (loading) {
 			this.setupProgressBar(true);
@@ -62,7 +70,11 @@ public class StatusBar extends Composite {
 		
 		this.setupProgressBar(false);
 	}
-
+	
+	/**
+	 * Creates the progressBar
+	 * @param indeterminated
+	 */
 	private void setupProgressBar(boolean indeterminated) {
 		if (progressBar != null) {
 			progressBar.dispose();
@@ -86,7 +98,6 @@ public class StatusBar extends Composite {
 		this.layout(true, true);
 		this.getParent().update();
 		this.getParent().layout(true, true);
-		
 	}
 	@Override
 	protected void checkSubclass() {

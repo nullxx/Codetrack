@@ -21,7 +21,14 @@ public class RestAPI {
 		}
 		return false;
 	}
-
+	/**
+	 * Login a user to remote
+	 * @param email
+	 * @param password
+	 * @return boolean success
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
 	public static boolean login(String email, String password) throws IOException, InterruptedException {
 		User user = new User(email, password);
 
@@ -29,7 +36,13 @@ public class RestAPI {
 		return RestAPI.isCorrect(response);
 
 	}
-
+	
+	/**
+	 * Get user allowed projects from remote
+	 * @return RemoteProject[]
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
 	public static RemoteProject[] getAllowedProjects() throws IOException, InterruptedException {
 		JsonObject response = HttpCaller.GET(String.format("%s/%s", baseURL, "project"));
 		if (RestAPI.isCorrect(response)) {
@@ -53,6 +66,13 @@ public class RestAPI {
 		}
 	}
 
+	/**
+	 * Create remote project
+	 * @param initialProjectData
+	 * @return RemoteProject
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
 	public static RemoteProject createProject(HashMap<String, Object> initialProjectData)
 			throws IOException, InterruptedException {
 		JsonObject response = HttpCaller.POST(String.format("%s/%s", baseURL, "project"), initialProjectData);
@@ -72,6 +92,13 @@ public class RestAPI {
 		}
 	}
 
+	/**
+	 * Update remoteProject details
+	 * @param updateData
+	 * @return boolean success
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
 	public static boolean updateProject(HashMap<String, Object> updateData) throws IOException, InterruptedException {
 		JsonObject response = HttpCaller.PUT(String.format("%s/%s", baseURL, "project"), updateData);
 		System.out.println(response.toString());
@@ -81,7 +108,14 @@ public class RestAPI {
 			return false;
 		}
 	}
-
+	
+	/**
+	 * Create remote snapshot
+	 * @param data
+	 * @return boolean success
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
 	public static boolean createSnapshot(HashMap<String, Object> data) throws IOException, InterruptedException {
 		JsonObject response = HttpCaller.PUT(String.format("%s/%s", baseURL, "project/snapshot"), data);
 		if (RestAPI.isCorrect(response)) {

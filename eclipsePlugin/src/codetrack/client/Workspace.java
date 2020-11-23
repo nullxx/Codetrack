@@ -14,6 +14,11 @@ import org.eclipse.ui.PlatformUI;
 
 public class Workspace {
 
+	/**
+	 * Get the localProjects in the workspace
+	 * @return LocalProject[]
+	 * @throws IOException
+	 */
 	public static LocalProject[] getLocalProjects() throws IOException {
 		LocalProject[] projectList = null;
 		int j = 0;
@@ -32,6 +37,11 @@ public class Workspace {
 		return projectList;
 	}
 
+	/**
+	 * Captures a snapshot of the current opened file
+	 * @return Snapshot
+	 * @throws IOException
+	 */
 	public static Snapshot captureSnapshot() throws IOException {
 		IWorkbench wb = PlatformUI.getWorkbench();
 		if (wb.getWorkbenchWindowCount() == 1) {
@@ -50,5 +60,4 @@ public class Workspace {
 		}
 		return null;
 	}
-	
 }

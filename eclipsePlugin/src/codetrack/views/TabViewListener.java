@@ -22,7 +22,9 @@ public class TabViewListener extends TabItem {
 		});
 
 	}
-
+	/**
+	 * Call all listeners to refresh
+	 */
 	private void toggleRefresh() {
 		for (TabFocusListener hl : listeners)
 			hl.refresh();
@@ -31,7 +33,9 @@ public class TabViewListener extends TabItem {
 	public void addListener(TabFocusListener toAdd) {
 		listeners.add(toAdd);
 	}
-
+	/**
+	 * Refresh the parent TabItem
+	 */
 	public void refreshView() {
 		this.getParent().layout(true, true);
 	}

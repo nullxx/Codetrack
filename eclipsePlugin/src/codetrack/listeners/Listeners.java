@@ -30,7 +30,9 @@ public class Listeners {
 	private void init() {
 		this.onSave();
 	}
-
+	/**
+	 * Will be triggered when saved file
+	 */
 	private void onSave() {
 		IResourceChangeListener listener = new IResourceChangeListener() {
 			@Override

@@ -34,7 +34,11 @@ public class Project {
 	public void setRemoteProject(RemoteProject remoteProject) {
 		this.remoteProject = remoteProject;
 	}
-
+	/**
+	 * Find a project given a file of it
+	 * @param file
+	 * @return Project
+	 */
 	public static Project fromFile(File file) {
 		for (int i = 0; i < Project.projects.length; i++) {
 			IProject iproject = Project.projects[i].getLocalProject().getOriginalProject();
@@ -45,13 +49,21 @@ public class Project {
 		}
 		return null;
 	}
-
+	
 	public static Project[] processProjects() throws IOException, InterruptedException {
 		LocalProject[] localProjects = Workspace.getLocalProjects();
 		RemoteProject[] cloudProjects = RestAPI.getAllowedProjects();
 		return Project.processProjects(localProjects, cloudProjects, true);
 	}
-
+	/**
+	 * Processes localProjects and remoteProjects
+	 * @param localProjects
+	 * @param cloudProjects
+	 * @param save
+	 * @return Project[]
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
 	public static Project[] processProjects(LocalProject[] localProjects, RemoteProject[] cloudProjects, boolean save)
 			throws IOException, InterruptedException {
 		Project[] projects = new Project[localProjects.length];
@@ -92,11 +104,18 @@ public class Project {
 			projects[k] = temp;
 			k++;
 		}
-		if (save)
+		if (save) {
 			Project.saveProjects(projects);
+		}
 		return projects;
 	}
-
+	/**
+	 * Create remoteProject given a localProject
+	 * @param localProject
+	 * @return Project
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
 	private static Project createRemoteProject(LocalProject localProject) throws IOException, InterruptedException {
 		// create remoteProject and link it with local one
 		HashMap<String, Object> initialProjectData = new HashMap<String, Object>();
@@ -119,12 +138,8 @@ public class Project {
 	}
 
 	/**
-	 * Returns true if project is already sync or has synqued since action param =
-	 * true
-	 * 
-	 * @param project
 	 * @param action  if is not sync, sync now
-	 * @return boolean
+	 * @return boolean true if project is already sync or has synqued since action param = true
 	 */
 	public boolean isFullFilledFistSync(boolean action) {
 		LocalProject localProject = this.getLocalProject();
@@ -146,7 +161,6 @@ public class Project {
 			return String.format("✅ SYNC ENABLED - %s", this.getLocalProject().toString());
 		}
 		return String.format("❎️ SYNC DISABLED - %s", this.getLocalProject().toString());
-
 	}
 
 }

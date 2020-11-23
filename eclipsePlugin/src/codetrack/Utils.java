@@ -23,6 +23,12 @@ public class Utils {
 		writer.close();
 	}
 
+	/**
+	 * Read a file from a given path
+	 * @param path
+	 * @return String
+	 * @throws IOException
+	 */
 	public static String readFile(String path) throws IOException {
 		FileReader reader = new FileReader(path);
 		String contents = "";
@@ -39,6 +45,11 @@ public class Utils {
 		return f.exists();
 	}
 
+	/**
+	 * Parse JSON given a JSON String
+	 * @param jsonStr
+	 * @return JsonObject
+	 */
 	public static JsonObject parseJSON(String jsonStr) {
 		JsonObject parsed = (JsonObject) new JsonParser().parse(jsonStr);
 		return parsed;

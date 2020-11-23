@@ -24,6 +24,12 @@ import codetrack.Storage;
 public class HttpCaller {
 	private final static HttpClient httpClient = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).build();
 
+	/**
+	 * Middleware to check if error on HTTP response
+	 * @param response
+	 * @throws JsonIOException
+	 * @throws IOException
+	 */
 	private static void processAuthResponse(JsonObject response) throws JsonIOException, IOException {
 		JsonElement data = response.get(Config.REMOTE_RESPONSE_KEY_DATA);
 		JsonElement error = response.get(Config.REMOTE_RESPONSE_KEY_ERROR); // TODO
@@ -36,12 +42,26 @@ public class HttpCaller {
 			}
 		}
 	}
-
+	
+	/**
+	 * Get the stoed auth token
+	 * @return String
+	 * @throws JsonIOException
+	 * @throws IOException
+	 */
 	private static String getAuthToken() throws JsonIOException, IOException {
 		Storage storage = new Storage();
 		return storage.getString(Config.LOCAL_STORAGE_KEY_BEARER_TOKEN);
 	}
 
+	/**
+	 * Make a POST request
+	 * @param url
+	 * @param data
+	 * @return JsonObject
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
 	public static JsonObject POST(String url, HashMap<String, Object> data) throws IOException, InterruptedException {
 		String boundary = new BigInteger(256, new Random()).toString();
 		HttpRequest.BodyPublisher bodyPublisher = buildFormDataFromMap(data, boundary);
@@ -56,7 +76,15 @@ public class HttpCaller {
 		return res;
 
 	}
-
+	
+	/**
+	 * Make a PUT request
+	 * @param url
+	 * @param data
+	 * @return JsonObject
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
 	public static JsonObject PUT(String url, HashMap<String, Object> data) throws IOException, InterruptedException {
 		String boundary = new BigInteger(256, new Random()).toString();
 		HttpRequest.BodyPublisher bodyPublisher = buildFormDataFromMap(data, boundary);
@@ -70,7 +98,14 @@ public class HttpCaller {
 		return res;
 
 	}
-
+	
+	/**
+	 * Make a GET request
+	 * @param url
+	 * @return JsonObject
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
 	public static JsonObject GET(String url) throws IOException, InterruptedException {
 
 		HttpRequest request = HttpRequest.newBuilder().GET().uri(URI.create(url))
@@ -83,8 +118,15 @@ public class HttpCaller {
 		return res;
 
 	}
-
-	public static HttpRequest.BodyPublisher buildFormDataFromMap(HashMap<String, Object> data, String boundary)
+	
+	/**
+	 * Create the body of the request
+	 * @param data
+	 * @param boundary
+	 * @return HttpRequest.BodyPublisher
+	 * @throws IOException
+	 */
+	private static HttpRequest.BodyPublisher buildFormDataFromMap(HashMap<String, Object> data, String boundary)
 			throws IOException {
 		// Result request body
 		List<byte[]> byteArrays = new ArrayList<>();
