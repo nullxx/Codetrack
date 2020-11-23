@@ -6,6 +6,11 @@ import java.security.NoSuchAlgorithmException;
 
 public class Crypto {
 
+	/**
+	 * Generate a SHA-512 hash
+	 * @param data
+	 * @return
+	 */
 	public static String genSHA512(String data){
 	    String generatedPassword = null;
 	    try {
