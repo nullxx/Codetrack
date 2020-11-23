@@ -16,4 +16,16 @@ const authorize = (req, res, next) => {
     next();
 };
 
+const superAuthorize = (req, res, next) => {
+    try {
+        const user = req.user;
+        if (user.role >= 4) {
+            throw new Error('UNAUTHORIZED');
+        }
+    } catch (error) {
+        next(error);
+    }
+    next();
+};
 module.exports.authorize = authorize;
+module.exports.superAuthorize = superAuthorize;
