@@ -33,7 +33,7 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     sequelize,
     tableName: 'projectFiles',
-    schema: 'eclipsetracker',
+    schema: process.env.DB_NAME,
     timestamps: false,
     indexes: [
       {

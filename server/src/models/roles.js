@@ -1,6 +1,5 @@
 /* jshint indent: 2 */
 
-const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
   return sequelize.define('roles', {
     id: {
@@ -20,7 +19,7 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     sequelize,
     tableName: 'roles',
-    schema: 'eclipsetracker',
+    schema: process.env.DB_NAME,
     timestamps: false,
     indexes: [
       {

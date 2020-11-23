@@ -49,7 +49,7 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     sequelize,
     tableName: 'files',
-    schema: 'eclipsetracker',
+    schema: process.env.DB_NAME,
     timestamps: false,
     indexes: [
       {
