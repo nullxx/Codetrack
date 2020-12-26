@@ -1,4 +1,5 @@
 const zlib = require('zlib');
+const AdmZip = require('adm-zip');
 const loggerLib = require('./logger');
 const collisionLib = require('./collision');
 const hashLib = require('./hash');
@@ -43,7 +44,7 @@ const createProject = async ({ name, language, user }) => {
 const updateProject = async ({ name, isAllowed, project, user }) => {
     const Project = DB.getConn().models.projects;
     const toUpdate = checkChanged({ name, isAllowed });
-    
+
     const updatedProject = await Project.update(
         toUpdate,
         {
@@ -90,6 +91,57 @@ const createMultipleSnapshots = async ({ user, project, fileDatas, localPath }) 
     return createdSnapshots;
 }
 
+/**
+ * List of buffers of last snapshot of a requested project
+ * @param {number} project 
+ * @param {boolean} compressed zip file will be returned
+ */
+const getFiles = async (project, compressed) => {
+    const compressedFile = new AdmZip();
+    const files = []
+    const ProjectFiles = DB.getConn().models.projectFiles;
+    const Snapshots = DB.getConn().models.snapshots;
+    const projectFiles = await ProjectFiles.findAll({
+        where: {
+            project
+        }
+    });
+    for (let i = 0; i < projectFiles.length; i++) {
+        const projectFile = projectFiles[i];
+        const snapshot = await Snapshots.findAll({
+            where: {
+                projectFile: projectFile.id
+            },
+            limit: 1,
+            order: [
+                ["createdAt", "DESC"]
+            ]
+        });
+        if (snapshot.length == 1) {
+            const file = await __retrieveFile(snapshot[0].file);
+            if (compressed) {
+                compressedFile.addFile(file.name, file.buffer);
+            } else {
+                files.push(file);
+            }
+        }
+    }
+    return compressedFile.toBuffer();
+}
+
+const __retrieveFile = async (id) => {
+    const Files = DB.getConn().models.files;
+    const file = await Files.findOne({
+        where: {
+            id
+        }
+    });
+    if (!file) throw new Error('ERR_FILE_NOT_FOUND');
+    const deflatedBase64File = storageLib.read(file.path)
+    const decodedFileDeflatedFile = Buffer.from(deflatedBase64File, 'base64');
+    const inflatedFile = zlib.inflateSync(decodedFileDeflatedFile);
+    return { name: file.name, buffer: inflatedFile };
+}
 /**
  * Creates a file instance  => saves data to DB and to filesystem
  * @param {string} lastFolder last nested path
@@ -198,3 +250,4 @@ module.exports.createProject = createProject;
 module.exports.updateProject = updateProject;
 module.exports.createSnapshot = createSnapshot;
 module.exports.createMultipleSnapshots = createMultipleSnapshots;
+module.exports.getFiles = getFiles;

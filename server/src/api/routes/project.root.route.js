@@ -6,7 +6,7 @@ const router = express.Router();
 
 const { authorize, superAuthorize } = require('../middlewares/auth.middleware');
 const controller = require('../controllers/project.controller');
-const { create, update, getOne } = require('../validations/project.root.validation');
+const { create, update, getOne, download } = require('../validations/project.root.validation');
 
 
 router
@@ -33,6 +33,14 @@ router
         superAuthorize,
         validate(getOne),
         controller.getOne
+    );
+router
+    .route('/:project/download')
+    .get(
+        authorize,
+        superAuthorize,
+        validate(download),
+        controller.downloadOne
     );
 
 module.exports = router;

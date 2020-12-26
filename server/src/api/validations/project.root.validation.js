@@ -19,5 +19,10 @@ module.exports = {
         params: Joi.object({
             project: Joi.number().required(),
         })
+    },
+    download: {
+        params: Joi.object({
+            project: Joi.number().required(),
+        })
     }
 }

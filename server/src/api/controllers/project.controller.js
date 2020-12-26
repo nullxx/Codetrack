@@ -1,5 +1,5 @@
 const loggerLib = require('../../lib/logger');
-const { getProjects, createProject, updateProject, getProject } = require('../../lib/project');
+const { getProjects, createProject, updateProject, getProject, getFiles } = require('../../lib/project');
 
 const list = async (req, res, next) => {
     try {
@@ -23,7 +23,18 @@ const getOne = async (req, res, next) => {
         next(error);
     }
 };
-
+const downloadOne = async (req, res, next) => {
+    try {
+        const { project } = req.params;
+        const compressedFile = await getFiles(project, true);
+        res.set('Content-Type', 'application/octet-stream');
+        res.send(compressedFile);
+        loggerLib.log('info', '/project - downloadOne', 'Download one project', req);
+    } catch (error) {
+        loggerLib.log('error', '/project - downloadOne', error, req);
+        next(error);
+    }
+}
 const create = async (req, res, next) => {
     const { name, language } = req.body;
     try {
@@ -53,3 +64,4 @@ module.exports.list = list;
 module.exports.create = create;
 module.exports.update = update;
 module.exports.getOne = getOne;
+module.exports.downloadOne = downloadOne;
