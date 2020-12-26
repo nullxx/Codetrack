@@ -29,6 +29,7 @@ router
 router
     .route('/:project')
     .get(
+        authorize,
         superAuthorize,
         validate(getOne),
         controller.getOne
