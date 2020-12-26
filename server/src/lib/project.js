@@ -42,7 +42,6 @@ const createProject = async ({ name, language, user }) => {
 
 const updateProject = async ({ name, isAllowed, project, user }) => {
     const Project = DB.getConn().models.projects;
-    isAllowed = isAllowed === true ? 1 : 0
     const toUpdate = checkChanged({ name, isAllowed });
     
     const updatedProject = await Project.update(
