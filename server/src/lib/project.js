@@ -120,7 +120,7 @@ const getFiles = async (project, compressed) => {
         if (snapshot.length == 1) {
             const file = await __retrieveFile(snapshot[0].file);
             if (compressed) {
-                compressedFile.addFile(file.name, file.buffer);
+                compressedFile.addFile(projectFile.localFilePath, file.buffer);
             } else {
                 files.push(file);
             }
