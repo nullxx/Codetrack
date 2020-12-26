@@ -14,5 +14,10 @@ module.exports = {
             name: Joi.string(),
             isAllowed: Joi.boolean()
         })
+    },
+    getOne: {
+        params: Joi.object({
+            project: Joi.number().required(),
+        })
     }
 }

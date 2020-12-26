@@ -18,6 +18,16 @@ const getProjects = async (userId) => {
     return userProjects;
 }
 
+const getProject = async (projectId) => {
+    const Project = DB.getConn().models.projects;
+
+    const userProject = await Project.findOne({
+        where: {
+            id: projectId
+        },
+    });
+    return userProject;
+}
 // TODO check if exists foreign key will exist before insert a row that references to that table
 const createProject = async ({ name, language, user }) => {
     const Project = DB.getConn().models.projects;
@@ -183,6 +193,7 @@ const __checkProjectFilesLocalPath = async (localFilePath, project) => {
 }
 
 module.exports.getProjects = getProjects;
+module.exports.getProject = getProject;
 module.exports.createProject = createProject;
 module.exports.updateProject = updateProject;
 module.exports.createSnapshot = createSnapshot;

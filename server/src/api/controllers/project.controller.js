@@ -1,5 +1,5 @@
 const loggerLib = require('../../lib/logger');
-const { getProjects, createProject, updateProject } = require('../../lib/project');
+const { getProjects, createProject, updateProject, getProject } = require('../../lib/project');
 
 const list = async (req, res, next) => {
     try {
@@ -8,6 +8,18 @@ const list = async (req, res, next) => {
         loggerLib.log('info', '/project - list', 'Listed projects', req);
     } catch (error) {
         loggerLib.log('error', '/project - list', error, req);
+        next(error);
+    }
+};
+
+const getOne = async (req, res, next) => {
+    try {
+        const { project } = req.params;
+        const userProject = await getProject(project);
+        res.send({ code: 1, data: userProject });
+        loggerLib.log('info', '/project - getOne', 'Get one project', req);
+    } catch (error) {
+        loggerLib.log('error', '/project - getOne', error, req);
         next(error);
     }
 };
@@ -40,3 +52,4 @@ const update = async (req, res, next) => {
 module.exports.list = list;
 module.exports.create = create;
 module.exports.update = update;
+module.exports.getOne = getOne;

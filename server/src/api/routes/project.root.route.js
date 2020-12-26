@@ -4,9 +4,9 @@ const { validate } = require('express-validation');
 
 const router = express.Router();
 
-const { authorize } = require('../middlewares/auth.middleware');
+const { authorize, superAuthorize } = require('../middlewares/auth.middleware');
 const controller = require('../controllers/project.controller');
-const { create, update } = require('../validations/project.root.validation');
+const { create, update, getOne } = require('../validations/project.root.validation');
 
 
 router
@@ -24,6 +24,14 @@ router
         authorize,
         validate(update),
         controller.update
-    )
+    );
+
+router
+    .route('/:project')
+    .get(
+        superAuthorize,
+        validate(getOne),
+        controller.getOne
+    );
 
 module.exports = router;
