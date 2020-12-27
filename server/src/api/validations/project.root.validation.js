@@ -6,7 +6,7 @@ module.exports = {
         body: Joi.object({
             name: Joi.string().required(),
             language: Joi.string().optional().allow(''),
-            natures: Joi.array().required(),
+            natures: Joi.array().items(Joi.string()).required(),
         }),
     },
     update: {
