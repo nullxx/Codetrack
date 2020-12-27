@@ -25,6 +25,10 @@ module.exports = function(sequelize, DataTypes) {
         key: 'id'
       }
     },
+    natures: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+    },
     createdAt: {
       type: DataTypes.DATE,
       allowNull: true,

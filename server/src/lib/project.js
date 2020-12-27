@@ -58,7 +58,7 @@ const updateProject = async ({ name, isAllowed, project, user }) => {
 }
 
 // 'localPath' is the base path for the file in 'fileData'
-const createSnapshot = async ({ user, project, fileData, localPath }) => {
+const createSnapshot = async ({ user, project, fileData, localPath, natures }) => {
     const Snapshot = DB.getConn().models.snapshots;
 
     const projectFile = await __checkProjectFilesLocalPath(`${localPath}/${fileData.name}`, project);
@@ -67,13 +67,14 @@ const createSnapshot = async ({ user, project, fileData, localPath }) => {
     const createdSnapshot = await Snapshot.create({
         projectFile: projectFile.dataValues.id,
         file: createdFile.dataValues.id,
+        natures
     });
 
     return createdSnapshot;
 }
 
 // 'localPath' is the base path for ALL the files in 'fileDatas'
-const createMultipleSnapshots = async ({ user, project, fileDatas, localPath }) => {
+const createMultipleSnapshots = async ({ user, project, fileDatas, localPath, natures }) => {
     const Snapshot = DB.getConn().models.snapshots;
     const toInsertFiles = [];
     for (let i = 0; i < fileDatas.length; i++) {
@@ -84,6 +85,7 @@ const createMultipleSnapshots = async ({ user, project, fileDatas, localPath }) 
         toInsertFiles.push({
             projectFile: projectFile.dataValues.id,
             file: createdFile.dataValues.id,
+            natures,
         })
     }
 
