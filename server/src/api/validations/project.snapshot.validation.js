@@ -5,8 +5,7 @@ module.exports = {
     create: {
         body: Joi.object({
             project: Joi.number().required(),
-            localPath: Joi.string().required(),
-            natures: Joi.array().required(),
+            localPath: Joi.string().required()
         }),
     }
 }

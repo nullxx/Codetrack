@@ -30,13 +30,14 @@ const getProject = async (projectId) => {
     return userProject;
 }
 // TODO check if exists foreign key will exist before insert a row that references to that table
-const createProject = async ({ name, language, user }) => {
+const createProject = async ({ name, language, user, natures }) => {
     const Project = DB.getConn().models.projects;
 
     const createdProject = await Project.create({
         name,
         language,
         user,
+        natures,
     });
     return createdProject;
 }
@@ -58,7 +59,7 @@ const updateProject = async ({ name, isAllowed, project, user }) => {
 }
 
 // 'localPath' is the base path for the file in 'fileData'
-const createSnapshot = async ({ user, project, fileData, localPath, natures }) => {
+const createSnapshot = async ({ user, project, fileData, localPath }) => {
     const Snapshot = DB.getConn().models.snapshots;
 
     const projectFile = await __checkProjectFilesLocalPath(`${localPath}/${fileData.name}`, project);
@@ -67,14 +68,13 @@ const createSnapshot = async ({ user, project, fileData, localPath, natures }) =
     const createdSnapshot = await Snapshot.create({
         projectFile: projectFile.dataValues.id,
         file: createdFile.dataValues.id,
-        natures
     });
 
     return createdSnapshot;
 }
 
 // 'localPath' is the base path for ALL the files in 'fileDatas'
-const createMultipleSnapshots = async ({ user, project, fileDatas, localPath, natures }) => {
+const createMultipleSnapshots = async ({ user, project, fileDatas, localPath }) => {
     const Snapshot = DB.getConn().models.snapshots;
     const toInsertFiles = [];
     for (let i = 0; i < fileDatas.length; i++) {
@@ -85,7 +85,6 @@ const createMultipleSnapshots = async ({ user, project, fileDatas, localPath, na
         toInsertFiles.push({
             projectFile: projectFile.dataValues.id,
             file: createdFile.dataValues.id,
-            natures,
         })
     }
 
