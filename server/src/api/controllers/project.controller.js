@@ -38,9 +38,8 @@ const downloadOne = async (req, res, next) => {
 const create = async (req, res, next) => {
     const { name, language, natures } = req.body;
 
-    const naturesStr = natures.join(',');
     try {
-        const created = await createProject({ name, language, natures: naturesStr, user: req.user.id });
+        const created = await createProject({ name, language, natures, user: req.user.id });
         res.send({ code: 1, data: created });
         loggerLib.log('info', '/project - create', `Created project id: ${created.id}`, req);
     } catch (error) {
