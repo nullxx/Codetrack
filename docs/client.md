@@ -132,7 +132,7 @@ eclipsePlugin
 ## Frontend
 Para para poder acceder a la tecnologia de hotreload y de un desarrollo más simple y rapido he optado por usar html/css en la parte del frontend.
 
-Para poder comunicarse entre las paginas estaticas del frontend y el codigo de java he construido una [clase](https://github.com/nullxx/Codetrack/blob/master/eclipsePlugin/src/codetrack/views/RichClient.java) ([documentation]((https://nullxx.github.io/Codetrack/eclipsePluginJavadoc/codetrack/views/RichClient.html))) que comunica ambos procesos
+Para poder comunicarse entre las paginas estaticas del frontend y el codigo de java he construido una [clase](https://github.com/nullxx/Codetrack/blob/master/eclipsePlugin/src/codetrack/views/RichClient.java) ([documentation](https://nullxx.github.io/Codetrack/eclipsePluginJavadoc/codetrack/views/RichClient.html)) que comunica ambos procesos
 
 
 ## Backend
