@@ -1,5 +1,6 @@
 Index: 
 - [Server](server.html)
+- [Client](client.html)
 - [API](api.html)
 - [Eclipse Plugin javadoc](/eclipsePluginJavadoc/index.html)
 
