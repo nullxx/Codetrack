@@ -1,6 +1,8 @@
 package codetrack.client;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.eclipse.core.resources.IProject;
 
@@ -19,7 +21,7 @@ public class LocalProject {
 	public LocalProject(IProject originalProject) throws IOException {
 		this.setOriginalProject(originalProject);
 	}
-	
+
 	public IProject getOriginalProject() {
 		return originalProject;
 	}
@@ -40,9 +42,10 @@ public class LocalProject {
 	public void setProjectConfig(LocalProjectConfig projectConfig) throws IOException {
 		this.projectConfig = projectConfig;
 	}
-	
+
 	/**
 	 * Save the config to the localProject storage
+	 * 
 	 * @throws IOException
 	 */
 	public void reSaveProjectConfig() throws IOException {
@@ -51,7 +54,8 @@ public class LocalProject {
 	}
 
 	/**
-	 * Saves the current localProjectConfig to a given path 
+	 * Saves the current localProjectConfig to a given path
+	 * 
 	 * @param localPath
 	 * @throws IOException
 	 */
@@ -59,9 +63,10 @@ public class LocalProject {
 		Gson gson = new Gson();
 		Utils.createFile(localPath, gson.toJson(this.getProjectConfig()));
 	}
-	
+
 	/**
 	 * Loads the localProjectConfig from the stored file
+	 * 
 	 * @param localPath
 	 * @throws IOException
 	 */
@@ -71,23 +76,33 @@ public class LocalProject {
 		LocalProjectConfig localProjectConfig = gson.fromJson(fileContents, LocalProjectConfig.class);
 		this.setProjectConfig(localProjectConfig);
 	}
+
 	/**
 	 * Returns the localProject file config path
+	 * 
 	 * @return String
 	 */
 	private String getConfigFilePath() {
 		String localPath = String.format("%s/%s", this.getProjectRootPath(), Config.LOCAL_PROJECT_FILE_INFO);
 		return localPath;
 	}
+
 	/**
 	 * Returns the localProject root path
+	 * 
 	 * @return String
 	 */
 	private String getProjectRootPath() {
 		return this.originalProject.getLocation().toString();
 	}
+
+	public ArrayList<File> getFullData() {
+		return Utils.listFileTree(new File(this.getProjectRootPath()), true);
+	}
+
 	/**
 	 * if true => project has not config stored
+	 * 
 	 * @return boolean
 	 */
 	public boolean isInited() {

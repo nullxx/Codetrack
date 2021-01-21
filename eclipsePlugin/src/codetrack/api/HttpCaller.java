@@ -26,6 +26,7 @@ public class HttpCaller {
 
 	/**
 	 * Middleware to check if error on HTTP response
+	 * 
 	 * @param response
 	 * @throws JsonIOException
 	 * @throws IOException
@@ -38,13 +39,15 @@ public class HttpCaller {
 		} else if (data != null && !data.isJsonNull()) {
 			if (data.getAsJsonObject().get(Config.REMOTE_RESPONSE_KEY_TOKEN) != null) {
 				Storage storage = new Storage();
-				storage.saveProp(Config.LOCAL_STORAGE_KEY_BEARER_TOKEN, data.getAsJsonObject().get(Config.REMOTE_RESPONSE_KEY_TOKEN).getAsString());
+				storage.saveProp(Config.LOCAL_STORAGE_KEY_BEARER_TOKEN,
+						data.getAsJsonObject().get(Config.REMOTE_RESPONSE_KEY_TOKEN).getAsString());
 			}
 		}
 	}
-	
+
 	/**
 	 * Get the stoed auth token
+	 * 
 	 * @return String
 	 * @throws JsonIOException
 	 * @throws IOException
@@ -54,8 +57,14 @@ public class HttpCaller {
 		return storage.getString(Config.LOCAL_STORAGE_KEY_BEARER_TOKEN);
 	}
 
+	public static void logOut() throws IOException {
+		Storage storage = new Storage();
+		storage.removeProp(Config.LOCAL_STORAGE_KEY_BEARER_TOKEN);
+	}
+
 	/**
 	 * Make a POST request
+	 * 
 	 * @param url
 	 * @param data
 	 * @return JsonObject
@@ -67,7 +76,8 @@ public class HttpCaller {
 		HttpRequest.BodyPublisher bodyPublisher = buildFormDataFromMap(data, boundary);
 		HttpRequest request = HttpRequest.newBuilder().POST(bodyPublisher).uri(URI.create(url))
 				.header("Content-Type", "multipart/form-data;boundary=" + boundary)
-				.header("Authorization", String.format(Config.HTTP_HEADER_BEARER_TOKEN, HttpCaller.getAuthToken())).build();
+				.header("Authorization", String.format(Config.HTTP_HEADER_BEARER_TOKEN, HttpCaller.getAuthToken()))
+				.build();
 
 		HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
@@ -76,9 +86,10 @@ public class HttpCaller {
 		return res;
 
 	}
-	
+
 	/**
 	 * Make a PUT request
+	 * 
 	 * @param url
 	 * @param data
 	 * @return JsonObject
@@ -90,7 +101,8 @@ public class HttpCaller {
 		HttpRequest.BodyPublisher bodyPublisher = buildFormDataFromMap(data, boundary);
 		HttpRequest request = HttpRequest.newBuilder().PUT(bodyPublisher).uri(URI.create(url))
 				.header("Content-Type", "multipart/form-data;boundary=" + boundary)
-				.header("Authorization", String.format(Config.HTTP_HEADER_BEARER_TOKEN, HttpCaller.getAuthToken())).build();
+				.header("Authorization", String.format(Config.HTTP_HEADER_BEARER_TOKEN, HttpCaller.getAuthToken()))
+				.build();
 
 		HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
@@ -98,9 +110,10 @@ public class HttpCaller {
 		return res;
 
 	}
-	
+
 	/**
 	 * Make a GET request
+	 * 
 	 * @param url
 	 * @return JsonObject
 	 * @throws IOException
@@ -109,7 +122,8 @@ public class HttpCaller {
 	public static JsonObject GET(String url) throws IOException, InterruptedException {
 
 		HttpRequest request = HttpRequest.newBuilder().GET().uri(URI.create(url))
-				.header("Authorization", String.format(Config.HTTP_HEADER_BEARER_TOKEN, HttpCaller.getAuthToken())).build();
+				.header("Authorization", String.format(Config.HTTP_HEADER_BEARER_TOKEN, HttpCaller.getAuthToken()))
+				.build();
 
 		HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
@@ -118,9 +132,32 @@ public class HttpCaller {
 		return res;
 
 	}
-	
+
+	/**
+	 * Download file
+	 * 
+	 * @param url
+	 * @return JsonObject
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+	public static Path downloadFile(String url) throws IOException, InterruptedException {
+
+		HttpRequest request = HttpRequest.newBuilder().GET().uri(URI.create(url))
+				.header("Authorization", String.format(Config.HTTP_HEADER_BEARER_TOKEN, HttpCaller.getAuthToken()))
+				.build();
+
+		String tmpDir = System.getProperty("java.io.tmpdir");
+
+		HttpResponse<Path> response = httpClient.send(request,
+				HttpResponse.BodyHandlers.ofFile(Path.of(tmpDir, String.valueOf(System.currentTimeMillis()))));
+		return response.body();
+
+	}
+
 	/**
 	 * Create the body of the request
+	 * 
 	 * @param data
 	 * @param boundary
 	 * @return HttpRequest.BodyPublisher

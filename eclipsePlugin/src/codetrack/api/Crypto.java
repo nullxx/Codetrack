@@ -8,6 +8,7 @@ public class Crypto {
 
 	/**
 	 * Generate a SHA-512 hash
+	 * 
 	 * @param data
 	 * @return
 	 */

@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="lib" path="swing2swt.jar"/>
-
-	<!-- START do not be scared == this is for developing in VSCOE -->
-	<!-- <classpathentry kind="lib" path="lib/eclipse.jar"/> -->
-	<!-- <classpathentry kind="lib" path="lib/org.osgi.framework-1.8.0.jar"/> -->
-
-	<!-- <classpathentry kind="lib" path="lib2/org.eclipse.ui.workbench_3.120.0.v20200829-1411.jar"/>
+	<classpathentry kind="lib" path="lib/eclipse.jar"/>
+	<classpathentry kind="lib" path="lib/org.osgi.framework-1.8.0.jar"/>
+	<classpathentry kind="lib" path="lib2/org.eclipse.ui.workbench_3.120.0.v20200829-1411.jar"/>
 	<classpathentry kind="lib" path="lib2/org.eclipse.ui_3.118.0.v20200807-0902.jar"/>
 	<classpathentry kind="lib" path="lib2/org.eclipse.core.runtime_3.19.0.v20200724-1004.jar"/>
 	<classpathentry kind="lib" path="lib2/org.apache.commons.httpclient_3.1.0.v201012070820.jar"/>
@@ -34,10 +36,7 @@
 	<classpathentry kind="lib" path="lib2/org.eclipse.jdt.core_3.23.0.v20200828-0941.jar"/>
 	<classpathentry kind="lib" path="lib2/org.eclipse.jdt.compiler.apt_1.3.1100.v20200828-0941.jar"/>
 	<classpathentry kind="lib" path="lib2/org.eclipse.jdt.compiler.tool_1.2.1000.v20200828-0941.jar"/>
-	<classpathentry kind="lib" path="/Users/nullx/eclipse-workspace/.metadata/.plugins/org.eclipse.pde.core/.external_libraries/org.eclipse.jdt.compiler.tool_1.2.1000.v20200828-0941/lib/java14api.jar"/>
+	<classpathentry kind="lib" path="/Users/nullx/eclipse-workspace/.metadata/.plugins/org.eclipse.pde.core/.external_libraries/org.eclipse.jdt.compiler.tool_1.2.1100.v20200916-0645/lib/javax15api.jar"/>
 	<classpathentry kind="lib" path="lib2/javax.inject_1.0.0.v20091030.jar"/>
-	<classpathentry kind="lib" path="/Users/nullx/Downloads/eclipse/plugins/org.eclipse.platform_3.7.2.v201202080800/platform.jar"/> -->
-	<!-- END do not be scared == this is for developing in VSCOE -->
-
 	<classpathentry kind="output" path="bin"/>
 </classpath>

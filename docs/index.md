@@ -1,5 +1,7 @@
 Index: 
 - [Server](server.html)
+- [API](api.html)
+- [Eclipse Plugin javadoc](/eclipsePluginJavadoc/index.html)
 
 # AUTHOR
 

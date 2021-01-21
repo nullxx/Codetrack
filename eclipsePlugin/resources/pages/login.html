@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <title>Login Form</title>
+    <link rel="stylesheet" href="css/login.css" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Coiny"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Libre+Baskerville"
+      rel="stylesheet"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  </head>
+  <body>
+    <form class="container center-screen" action="" method="GET" onsubmit="event.preventDefault()">
+      <h1>LOGIN</h1>
+      <div style="display: none;" id="loginFalse">
+        <div class="alert alert-danger">
+          <strong>Something wrong!</strong> Please check the email and password and try again.
+        </div>
+      </div>
+      <input type="email" id="email" placeholder="EMAIL" value="test@codetrack.org"/>
+      <input type="password" id="password" placeholder="PASSWORD" value="patata123" />
+      <input type="submit" value="Login" onclick="onLogin();" />
+    </form>
+  </body>
+  <script src="js/login.js"></script>
+</html>

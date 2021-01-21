@@ -6,11 +6,11 @@ public class Snapshot {
 	private Project project;
 	private File file;
 
-	
 	public Snapshot(Project project, File file) {
 		this.project = project;
 		this.file = file;
 	}
+
 	public File getFile() {
 		return file;
 	}

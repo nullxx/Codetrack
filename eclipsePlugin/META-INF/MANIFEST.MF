@@ -4,18 +4,21 @@ Bundle-Name: Codetrack
 Bundle-SymbolicName: codetrack;singleton:=true
 Bundle-Version: 1.0.5.SNAPSHOT
 Bundle-Activator: codetrack.Activator
-Require-Bundle: org.apache.commons.httpclient;bundle-version="3.1.0",
- com.google.gson;bundle-version="2.8.2",
+Require-Bundle: com.google.gson;bundle-version="2.8.2",
  org.eclipse.core.resources;bundle-version="3.13.800",
  org.eclipse.text,
  org.eclipse.ui.workbench.texteditor,
  org.eclipse.core.runtime,
  org.eclipse.ui,
  org.eclipse.jdt.core;bundle-version="3.23.0",
- org.eclipse.swt
+ org.eclipse.swt,
+ org.apache.httpcomponents.httpclient;bundle-version="4.5.10",
+ org.apache.commons.io;bundle-version="2.6.0",
+ org.junit;bundle-version="3.7.7",
+ org.junit.jupiter.api
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Automatic-Module-Name: Codetrack
-Import-Package: javax.inject
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
  swing2swt.jar
+Import-Package: javax.inject;version="1.0.0"

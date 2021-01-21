@@ -1,187 +1,313 @@
 package codetrack.views;
 
-import java.io.IOException;
-
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.List;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.TabFolder;
-import org.eclipse.swt.widgets.TabItem;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Composite;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.HashMap;
+
+import org.eclipse.core.runtime.CoreException;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
 import codetrack.Config;
-import codetrack.Storage;
+import codetrack.Utils;
+import codetrack.api.HttpCaller;
 import codetrack.api.RestAPI;
+import codetrack.client.Group;
+import codetrack.client.Observation;
 import codetrack.client.Project;
+import codetrack.client.RemoteProject;
+import codetrack.client.User;
+import codetrack.client.Workspace;
 import codetrack.listeners.Listeners;
-import swing2swt.layout.BorderLayout;
 
 public class MainView extends CompositeWithLoader {
-	private Text txtPassword;
-	private Text txtEmail;
-	private List logList;
-	private TabFolder tabFolder;
-	private Permissions tbtmPermisos;
-	private Composite composite_2;
+	RichClient loginView;
+	RichClient projectListView;
+	RichClient adminView;
+	private final String BASE_URL = Config.CLIENT_BASE_URL;
 
 	public MainView(Composite parent, int style) {
 		super(parent, style);
 
-		tabFolder = new TabFolder(this, SWT.NONE);
-		tabFolder.setLayoutData(BorderLayout.CENTER);
+		this.initListeners();
 
-		TabItem tbtmLogin = new TabItem(tabFolder, SWT.NONE);
-		tbtmLogin.setText("Usuario");
+		this.launchLoginView();
+	}
 
-		Composite composite = new Composite(tabFolder, SWT.NONE);
-		tbtmLogin.setControl(composite);
-		composite.setLayout(new FormLayout());
+	// start login
 
-		Composite composite_1 = new Composite(composite, SWT.NONE);
-		composite_1.setLayout(new FillLayout(SWT.HORIZONTAL));
-		FormData fd_composite_1 = new FormData();
-		fd_composite_1.top = new FormAttachment(0, 29);
-		fd_composite_1.bottom = new FormAttachment(100);
-		fd_composite_1.left = new FormAttachment(0);
-		fd_composite_1.right = new FormAttachment(100);
-		composite_1.setLayoutData(fd_composite_1);
-
-		composite_2 = new Composite(composite_1, SWT.NONE);
-		composite_2.setLayout(new BorderLayout(0, 0));
-
-		Label lblIntroduceTusCredenciales = new Label(composite_2, SWT.NONE);
-		lblIntroduceTusCredenciales.setLayoutData(BorderLayout.NORTH);
-		lblIntroduceTusCredenciales.setText(Config.LOGIN_DETAIL_MESSAGE);
-
-		Composite composite_4 = new Composite(composite_2, SWT.NONE);
-		composite_4.setLayout(new FillLayout(SWT.VERTICAL));
-
-		txtEmail = new Text(composite_4, SWT.BORDER);
-		txtEmail.setText(Config.LOGIN_EMAIL_TEXTFIELD_INITIAL_VALUE);
-
-		txtPassword = new Text(composite_4, SWT.BORDER | SWT.PASSWORD);
-		txtPassword.setText(Config.LOGIN_PASSWORD_TEXTFIELD_INITIAL_VALUE);
-
-		Button btnEnviar = new Button(composite_4, SWT.NONE);
-		btnEnviar.setText(Config.TAB_PERMISSIONS_FOLDER_NAME);
-
-		btnEnviar.addListener(SWT.Selection, new Listener() {
+	/**
+	 * Launch login view
+	 */
+	private void launchLoginView() {
+		loginView = new RichClient(this, String.format("%s/%s", BASE_URL, "login.html"));
+		loginView.addListener(new BrowserListener() {
 			@Override
-			public void handleEvent(Event event) {
-				MainView.this.toggleLogin(txtEmail.getText(), txtPassword.getText());
+			public Object bCallback(BrowserListenerResponse browserListenerResponse) {
+				if (browserListenerResponse.getType() == BrowserListenerResponseType.LOGIN) {
+					JsonObject data = browserListenerResponse.getData();
+					String email = data.get("email").getAsString();
+					String password = data.get("password").getAsString();
+					return MainView.this.login(email, password);
+				}
+				return false;
 			}
 		});
+		layout(true, true);
+	}
 
-		Composite composite_3 = new Composite(composite_1, SWT.NONE);
-		composite_3.setLayout(new FillLayout(SWT.VERTICAL));
+	/**
+	 * Manages login request
+	 * 
+	 * @param email
+	 * @param password
+	 * @return success
+	 */
+	private boolean login(String email, String password) {
+		try {
+			User logged = RestAPI.login(email, password);
+			if (logged != null) {
+				loginView.dispose();
+				if (logged.isAdmin()) {
+					launchAdminView();
+				} else {
+					launchProjectListView();
+				}
 
-		logList = new List(composite_3, SWT.BORDER);
+				return true;
+			}
+		} catch (IOException | InterruptedException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	// end login
 
-		FormData fd_lblNewLabel = new FormData();
-		fd_lblNewLabel.bottom = new FormAttachment(composite_1, -6);
-		fd_lblNewLabel.left = new FormAttachment(0, 185);
-		fd_lblNewLabel.top = new FormAttachment(0, 9);
-		fd_lblNewLabel.right = new FormAttachment(100, -186);
+	// start projectList
 
-		this.autoLogIn();
-		this.initListeners();
+	/**
+	 * Launches project list view
+	 */
+	private void launchProjectListView() {
+		projectListView = new RichClient(this, String.format("%s/%s", BASE_URL, "userCheckProjects.html"));
+		projectListView.addListener(new BrowserListener() {
+			@Override
+			public Object bCallback(BrowserListenerResponse browserListenerResponse) {
+				Object toReturn = null;
+
+				JsonObject data = browserListenerResponse.getData();
+				switch (browserListenerResponse.getType()) {
+				case GET_PROJECT_LIST:
+					toReturn = getProjectListStr();
+					break;
+				case SET_PROJECT_STATUS:
+					updateProject(data);
+					toReturn = getProjectListStr();
+					break;
+				case SYNC_FULL_PROJECT:
+					toReturn = syncFullProject(data);
+					break;
+				case LOG_OUT:
+					logOut(projectListView);
+					break;
+				default:
+					break;
+				}
+				return toReturn;
+			}
+		});
+		layout(true, true);
+	}
+
+	/**
+	 * Get the local project list
+	 * 
+	 * @return json string formatted
+	 */
+	private String getProjectListStr() {
+		try {
+			JsonArray projectList = (JsonArray) Project.projectsJSON(Project.processProjects());
+			return projectList.toString();
+		} catch (IOException | InterruptedException | CoreException e) {
+			Utils.handleException(e);
+		}
+		return null;
+	}
+
+	/**
+	 * Manages the update of a project
+	 * 
+	 * @param data to update
+	 * @return success
+	 */
+	private boolean updateProject(JsonObject data) {
+		try {
+			HashMap<String, Object> updateData = new HashMap<String, Object>();
+			updateData.put("project", data.get("project").getAsInt());
+			updateData.put("isAllowed", data.get("isAllowed").getAsBoolean());
+
+			return RestAPI.updateProject(updateData);
+		} catch (IOException | InterruptedException e) {
+			Utils.handleException(e);
+		}
+		return false;
+	}
+
+	/**
+	 * Triggers sync for a project
+	 * 
+	 * @param data
+	 * @return
+	 */
+	private boolean syncFullProject(JsonObject data) {
+		int projectId = data.get("project").getAsInt();
+		Project p = Project.fromId(projectId);
+		try {
+			return p.isFullFilledFistSync(true, true);
+		} catch (IOException | InterruptedException | CoreException e) {
+			Utils.handleException(e);
+		}
+		return false;
+	}
+	// end projectList
+
+	// start adminView
+	/**
+	 * Launches admin view
+	 */
+	private void launchAdminView() {
+		adminView = new RichClient(this, String.format("%s/%s", BASE_URL, "adminView.html"));
+		adminView.addListener(new BrowserListener() {
+			@Override
+			public Object bCallback(BrowserListenerResponse browserListenerResponse) {
+				Object toReturn = null;
+
+				JsonObject data = browserListenerResponse.getData();
+				switch (browserListenerResponse.getType()) {
+				case ADMIN_GET_GROUP_LIST:
+					toReturn = getGroupListStr();
+					break;
+				case ADMIN_GET_GROUP_OBSERVATIONS:
+					int groupId = data.get("group").getAsInt();
+					toReturn = getObservationListStr(groupId);
+					break;
+				case ADMIN_GET_OBSERVATION_PROJECTS:
+					String observationId = data.get("shortId").getAsString();
+					toReturn = getObservationProjectListStr(observationId);
+					break;
+				case ADMIN_DOWNLOAD_PROJECT:
+					int projectId = data.get("project").getAsInt();
+					downloadProject(projectId);
+					break;
+				case LOG_OUT:
+					logOut(adminView);
+					break;
+				default:
+					break;
+				}
+				return toReturn;
+			}
+		});
+		layout(true, true);
+	}
+
+	/**
+	 * Get the group list
+	 * 
+	 * @return json string formatted
+	 */
+	private String getGroupListStr() {
+		try {
+			JsonArray groupList = (JsonArray) Group.groupsJSON(RestAPI.getGroups());
+			return groupList.toString();
+		} catch (IOException | InterruptedException e) {
+			Utils.handleException(e);
+		}
+		return null;
+	}
+
+	/**
+	 * Get the observation list
+	 * 
+	 * @return json string formatted
+	 */
+	private String getObservationListStr(int groupId) {
+		try {
+			Group group = new Group(groupId);
+			Observation[] observations = group.getObservations();
+			JsonArray observationList = (JsonArray) Observation.observationsJSON(observations);
+			return observationList.toString();
+		} catch (IOException | InterruptedException e) {
+			Utils.handleException(e);
+		}
+		return null;
+	}
+
+	/**
+	 * Get the observation project list
+	 * 
+	 * @return json string formatted
+	 */
+	private String getObservationProjectListStr(String shortId) {
+
+		try {
+			RemoteProject[] projects = RestAPI.getObservationProjects(shortId);
+			JsonArray projectList = (JsonArray) RemoteProject.remoteProjectsJSON(projects);
+			return projectList.toString();
+		} catch (IOException | InterruptedException e) {
+			Utils.handleException(e);
+		}
+		return null;
+	}
+
+	/**
+	 * Triggers the download of a project
+	 * 
+	 * @param projectId
+	 */
+	private void downloadProject(int projectId) {
+		try {
+			RemoteProject p = RestAPI.getProject(projectId);
+			Path ds = RestAPI.downloadProject(projectId);
+			Workspace.createProject(p, ds.toAbsolutePath().toString());
+		} catch (IOException | InterruptedException | CoreException e) {
+			Utils.handleException(e);
+		}
+
+	}
+	// end adminView
+
+	/**
+	 * Logs out from a RichClient view
+	 * 
+	 * @param from
+	 */
+	private void logOut(RichClient from) {
+		try {
+			from.dispose();
+			HttpCaller.logOut();
+			launchLoginView();
+		} catch (IOException e) {
+			Utils.handleException(e);
+		}
+	}
+
+	/**
+	 * Start listeners
+	 */
+	private void initListeners() {
+		try {
+			new Listeners();
+		} catch (Exception e) {
+			Utils.handleException(e);
+		}
 	}
 
 	@Override
 	protected void checkSubclass() {
 		// Disable the check that prevents subclassing of SWT components
-	}
-
-	private void initListeners() {
-		try {
-			new Listeners();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	private void openPermisos() {
-		if (this.tbtmPermisos != null)
-			return;
-		this.tbtmPermisos = new Permissions(this.tabFolder, SWT.BORDER, Config.TAB_PERMISSIONS_FOLDER_NAME);
-	}
-
-	private void toggleLogin(String email, String password) {
-
-		log("Sending login");
-		this.setLoading("Sending login", true);
-		String message = null;
-		try {
-			boolean logged = RestAPI.login(email, password);
-			if (logged) {
-				log("Login success");
-				message = "Success login";
-
-				openPermisos();
-				hideLogin();
-				initLogged();
-
-				this.tabFolder.pack();
-				getParent().layout(true, true);
-			} else {
-				log("Login unsuccessfull");
-				message = "Please check your email || password";
-			}
-		} catch (IOException | InterruptedException e) {
-			log(message);
-			message = this.handleException(e);
-		}
-		this.setLoading(message, false);
-	}
-
-	private void autoLogIn() {
-		log("LAUNCHING AUTO-LOGIN");
-		Storage s = new Storage();
-		try {
-			String bearer = s.getString(Config.LOCAL_STORAGE_KEY_BEARER_TOKEN);
-			if (bearer != null) {
-				log("Login success");
-
-				openPermisos();
-				hideLogin();
-				initLogged();
-
-				this.tabFolder.pack();
-				getParent().layout(true, true);
-			}
-		} catch (IOException | InterruptedException e) {
-			String message = this.handleException(e);
-			this.setError(message);
-		}
-
-	}
-
-	public void initLogged() throws IOException, InterruptedException {
-		Project.processProjects();
-	}
-
-	private String handleException(Exception e) {
-		e.printStackTrace();
-		String message = String.format("Error: %s", e.getMessage());
-		return message;
-	}
-
-	private void hideLogin() {
-		this.composite_2.dispose();
-	}
-
-	private void log(String msg) { // FIXME this is temporal logging !!! 
-		logList.add(msg);
-		logList.select(logList.getItemCount() - 1);
-		logList.showSelection();
 	}
 }

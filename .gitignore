@@ -1,9 +1,1 @@
-node_modules/
-package-lock.json
-.env
-*.log
-
-uploads/
-eclipsePlugin/lib/
-eclipsePlugin/lib2/
 .DS_Store

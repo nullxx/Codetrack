@@ -47,4 +47,7 @@
    <extension
          point="org.eclipse.ui.menus">
    </extension>
+   <extension
+         point="org.eclipse.core.resources.natures">
+   </extension>
 </plugin>

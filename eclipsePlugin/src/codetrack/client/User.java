@@ -5,11 +5,10 @@ import java.util.HashMap;
 
 import codetrack.api.Crypto;
 
-
 public class User {
 	private String email;
 	private String password;
-
+	private boolean admin;
 
 	public User(String email, String password) throws IOException {
 		this.setEmail(email);
@@ -57,14 +56,22 @@ public class User {
 	}
 
 	/**
-     * Get user data formated in a HashMap
-     * 
-     * @return HashMap<String, String>
-     */
-    public HashMap<String, Object> getFormated() {
-    	HashMap<String, Object> user = new HashMap<>();
-    	user.put("email", this.email);
-    	user.put("password", Crypto.genSHA512(this.password));
-    	return user;
-    }
+	 * Get user data formated in a HashMap
+	 * 
+	 * @return HashMap<String, String>
+	 */
+	public HashMap<String, Object> getFormated() {
+		HashMap<String, Object> user = new HashMap<>();
+		user.put("email", this.email);
+		user.put("password", Crypto.genSHA512(this.password));
+		return user;
+	}
+
+	public boolean isAdmin() {
+		return admin;
+	}
+
+	public void setAdmin(boolean admin) {
+		this.admin = admin;
+	}
 }

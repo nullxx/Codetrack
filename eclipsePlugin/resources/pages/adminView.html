@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Admin view</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" />
+    <style>
+        .reload {
+            font-family: Lucida Sans Unicode;
+        }
+
+        div.sticky {
+            position: -webkit-sticky;
+            position: sticky;
+            top: 0;
+            background-color: grey;
+            padding: 10px;
+            font-size: 20px;
+            z-index: 3;
+        }
+
+        .center-button {
+            margin: 0 auto;
+            display: block;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            /*grid-template-rows: 1fr 1fr;*/
+            gap: 0px 9px;
+            grid-template-areas:
+                "groups observations projects"
+                /*"info info info";*/
+        }
+
+        /*.info {
+        grid-area: info;
+      }*/
+
+        .groups {
+            grid-area: groups;
+        }
+
+        .observations {
+            grid-area: observations;
+        }
+
+        .projects {
+            grid-area: projects;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+</head>
+
+<body id="top">
+    <div class="sticky">
+        <h3 style="color: white">Admin Panel</h3>
+        <button type="button" class="btn btn-outline-dark" onclick="location.reload();">
+            Reload <span class="reload">&#x21bb;</span>
+        </button>
+    </div>
+    <div id="loader" class="sticky" style="padding: 40px; display: block">
+        <div class="progress">
+            <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100"
+                aria-valuemin="100" aria-valuemax="100" style="width: 100%">
+                Loading
+            </div>
+        </div>
+    </div>
+    <div style="padding: 10px" class="main-layout">
+        <div class="grid-container">
+            <div class="groups">
+                <h4>Groups</h4>
+                <div class="list-group" id="groupList">
+
+                </div>
+            </div>
+            <div class="observations">
+                <h4>Observations</h4>
+                <div class="list-group" style="/*display: grid; justify-items:center;*/" id="observationList">
+                </div>
+            </div>
+            <div class="projects">
+                <h4>Projects</h4>
+                <div class="list-group" id="observationProjectList">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button type="button" class="btn btn-danger center-button" onclick="logout();">
+        Log out
+    </button>
+    <script src="js/adminView.js"></script>
+</body>
+
+</html>

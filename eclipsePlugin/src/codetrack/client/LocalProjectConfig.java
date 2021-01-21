@@ -42,6 +42,11 @@ public class LocalProjectConfig {
 		this.allowed = allowed;
 	}
 
+	/**
+	 * If a project has ever made a full sync
+	 * 
+	 * @return boolean
+	 */
 	public boolean isFullFirstSyncDone() {
 		return fullFirstSyncDone;
 	}

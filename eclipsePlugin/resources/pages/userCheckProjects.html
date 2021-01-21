@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>User projects</title>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+    />
+    <style>
+      .reload {
+        font-family: Lucida Sans Unicode
+      }
+      div.sticky {
+        position: -webkit-sticky;
+        position: sticky;
+        top: 0;
+        background-color: grey;
+        padding: 10px;
+        font-size: 20px;
+        z-index: 1;
+      }
+      .center-button {
+        margin: 0 auto;
+        display: block;
+      }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+  </head>
+  <body id="top">
+    <div class="sticky">
+      <h3 style="color:white;">Projects</h3>
+      <button type="button" class="btn btn-outline-dark" onclick="init();">Reload <span class=reload>&#x21bb;</span></button>
+    </div>
+    <div id="loader" class="sticky" style="padding: 40px; display: block">
+      <div class="progress">
+        <div
+          class="progress-bar progress-bar-striped active"
+          role="progressbar"
+          aria-valuenow="100"
+          aria-valuemin="100"
+          aria-valuemax="100"
+          style="width: 100%"
+        >
+          Loading
+        </div>
+      </div>
+    </div>
+    <div class="panel-group" id="listProjects" style="padding: 15px;">
+    <h2>No projects</h2>
+    </div>
+
+    <button type="button" class="btn btn-danger center-button" onclick="logout();">Log out</button>
+    <script src="js/userCheckProjects.js"></script>
+  </body>
+</html>
